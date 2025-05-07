@@ -21,9 +21,6 @@ interface MinerInfoModalProps {
 }
 
 const MinerInfoModal = ({ isOpen, onClose, coords, address }: MinerInfoModalProps) => {
-  console.log('MinerInfoModal - coords:', coords);
-  console.log('MinerInfoModal - address:', address);
-
   const { data: isOccupied } = useContractRead({
     address: MINING_ADDRESS as `0x${string}`,
     abi: MINING_ABI,
@@ -44,19 +41,8 @@ const MinerInfoModal = ({ isOpen, onClose, coords, address }: MinerInfoModalProp
     },
   });
 
-  console.log('MinerInfoModal - isOccupied:', isOccupied);
-  console.log('MinerInfoModal - miners:', miners);
-  
   if (miners) {
-    console.log('MinerInfoModal - miners array length:', miners.length);
     miners.forEach((miner: any, index: number) => {
-      console.log(`MinerInfoModal - miner ${index}:`, {
-        x: miner.x.toString(),
-        y: miner.y.toString(),
-        hashrate: miner.hashrate.toString(),
-        powerConsumption: miner.powerConsumption.toString(),
-        inProduction: miner.inProduction
-      });
     });
   }
 
@@ -64,18 +50,9 @@ const MinerInfoModal = ({ isOpen, onClose, coords, address }: MinerInfoModalProp
     (miner: any) => {
       const match = miner.x.toString() === coords?.x?.toString() && 
                    miner.y.toString() === coords?.y?.toString();
-      console.log('MinerInfoModal - comparing:', {
-        minerX: miner.x.toString(),
-        minerY: miner.y.toString(),
-        coordsX: coords?.x?.toString(),
-        coordsY: coords?.y?.toString(),
-        match
-      });
       return match;
     }
   );
-
-  console.log('MinerInfoModal - currentMiner:', currentMiner);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>

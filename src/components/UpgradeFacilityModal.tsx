@@ -16,8 +16,8 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { useAccount, useBalance, useContractRead, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS } from '../config/contracts';
-import { formatEther } from 'viem';
+import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
+import { formatEther, parseEther } from 'viem';
 import { writeContract } from '@wagmi/core';
 
 interface UpgradeFacilityModalProps {
@@ -89,7 +89,6 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
         currMiners: Number(currentFacility[6]),
         currPowerOutput: Number(currentFacility[7])
       };
-      console.log('Facility data:', facilityData);
     }
   }, [currentFacility]);
 
@@ -109,6 +108,43 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
   const fixedUpgradeCost = BigInt(1440 * 10**18); // 1440 MAXX in wei
   const hasEnoughBalance = maxxBalance && maxxBalance.value >= fixedUpgradeCost;
 
+  const { data: allowance, refetch: refetchAllowance } = useContractRead({
+    address: ETHERMAX_ADDRESS as `0x${string}`,
+    abi: ETHERMAX_ABI,
+    functionName: 'allowance',
+    args: [address, MINING_ADDRESS],
+    query: { enabled: !!address },
+  });
+  const { writeContractAsync: writeApprove, isPending: isApproving } = useWriteContract();
+  const hasEnoughAllowance = allowance && typeof allowance === 'bigint' && allowance >= fixedUpgradeCost;
+
+  const handleApprove = async () => {
+    try {
+      await writeApprove({
+        address: ETHERMAX_ADDRESS as `0x${string}`,
+        abi: ETHERMAX_ABI,
+        functionName: 'approve',
+        args: [MINING_ADDRESS, parseEther('1000000')],
+      });
+      toast({
+        title: 'Approving MAXX tokens...',
+        description: 'Please confirm the transaction in your wallet',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+      });
+      if (refetchAllowance) refetchAllowance();
+    } catch (error: any) {
+      toast({
+        title: 'Approval failed',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   const handleUpgrade = async () => {
     if (!hasEnoughBalance) {
       toast({ title: 'Not enough MAXX', status: 'error' });
@@ -116,11 +152,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
     }
 
     try {
-      console.log('Starting upgrade process...');
-      console.log('Contract address:', MINING_ADDRESS);
-      
       if (!writeContractAsync) {
-        console.error('writeContractAsync is not available');
         toast({ 
           title: 'Cannot prepare transaction', 
           status: 'error', 
@@ -137,10 +169,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
         args: []
       };
       
-      console.log('Transaction config:', tx);
-      
       const hash = await writeContractAsync(tx);
-      console.log('Transaction hash:', hash);
       
       toast({ 
         title: 'Confirm upgrade in MetaMask', 
@@ -156,14 +185,12 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
       });
 
       if (receipt) {
-        console.log('Transaction mined:', receipt);
         onUpgrade(nextFacilityIndex);
         onClose();
         // Force page reload after successful upgrade
         window.location.reload();
       }
     } catch (e: any) {
-      console.error('Upgrade error:', e);
       toast({ 
         title: 'Upgrade failed', 
         description: e.message, 
@@ -176,9 +203,6 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
 
   // Remove the useEffect for isSuccess since we handle it in handleUpgrade
   useEffect(() => {
-    console.log('UpgradeFacilityModal mounted');
-    console.log('Current facility index:', currentFacilityIndex);
-    console.log('Next facility index:', nextFacilityIndex);
   }, [currentFacilityIndex, nextFacilityIndex]);
 
   return (
@@ -216,7 +240,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
                 borderColor="neon.blue"
                 bg="neon.dark"
               >
-                <Text color="#fff" fontSize="xs" mb={2} textShadow="0 0 8px #00E8FF">LEVEL {currentFacilityIndex + 1}</Text>
+                <Text color="#fff" fontSize="xs" mb={2} textShadow="0 0 8px #00E8FF">LEVEL {currentFacilityIndex}</Text>
                 <Text color="#fff" fontSize="xs">POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>28 W</span></Text>
                 <Text color="#fff" fontSize="xs">SPACE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>4 UNITS</span></Text>
               </Box>
@@ -255,31 +279,53 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
 
         <ModalFooter>
           <Center w="100%">
-            <Button
-              colorScheme="blue"
-              bg="neon.blue"
-              color="white"
-              _hover={{
-                bg: 'neon.pink',
-                boxShadow: '0 0 16px #FF00CC',
-              }}
-              onClick={handleUpgrade}
-              isLoading={isUpgrading || isConfirming}
-              loadingText={isUpgrading ? "CONFIRMING..." : "UPGRADING..."}
-              fontFamily="'Press Start 2P', monospace"
-              fontSize="xs"
-              px={6}
-              py={4}
-              borderRadius="md"
-              border="2px solid"
-              borderColor="neon.blue"
-              _active={{
-                transform: 'scale(0.95)',
-              }}
-              isDisabled={!hasEnoughBalance}
-            >
-              UPGRADE TO LEVEL {nextFacilityIndex + 1}
-            </Button>
+            {!hasEnoughAllowance ? (
+              <Button
+                colorScheme="blue"
+                bg="neon.blue"
+                color="white"
+                _hover={{ bg: 'neon.pink', boxShadow: '0 0 16px #FF00CC' }}
+                onClick={handleApprove}
+                isLoading={isApproving}
+                loadingText="Approving..."
+                fontFamily="'Press Start 2P', monospace"
+                fontSize="xs"
+                px={6}
+                py={4}
+                borderRadius="md"
+                border="2px solid"
+                borderColor="neon.blue"
+                _active={{ transform: 'scale(0.95)' }}
+                transition="all 0.2s"
+                sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
+                isDisabled={!hasEnoughBalance}
+              >
+                APPROVE MAXX
+              </Button>
+            ) : (
+              <Button
+                colorScheme="blue"
+                bg="neon.blue"
+                color="white"
+                _hover={{ bg: 'neon.pink', boxShadow: '0 0 16px #FF00CC' }}
+                onClick={handleUpgrade}
+                isLoading={isUpgrading || isConfirming}
+                loadingText={isUpgrading ? "CONFIRMING..." : "UPGRADING..."}
+                fontFamily="'Press Start 2P', monospace"
+                fontSize="xs"
+                px={6}
+                py={4}
+                borderRadius="md"
+                border="2px solid"
+                borderColor="neon.blue"
+                _active={{ transform: 'scale(0.95)' }}
+                transition="all 0.2s"
+                sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
+                isDisabled={!hasEnoughBalance}
+              >
+                UPGRADE TO LEVEL {nextFacilityIndex}
+              </Button>
+            )}
           </Center>
         </ModalFooter>
       </ModalContent>

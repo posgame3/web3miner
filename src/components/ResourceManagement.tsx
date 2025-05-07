@@ -67,19 +67,12 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
     }
   });
 
-  console.log('Raw facility data:', facilityData);
-  console.log('Current address:', address);
-
   useEffect(() => {
-    console.log('Facility data changed:', facilityData);
-    
     if (!facilityData) {
-      console.log('No facility data available');
       return;
     }
 
     if (!Array.isArray(facilityData)) {
-      console.log('Facility data is not an array:', facilityData);
       return;
     }
 
@@ -105,8 +98,6 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
         currPowerOutput: Number(currPowerOutput)
       };
       
-      console.log('Parsed facility data:', parsedData);
-
       // Mapowanie facilityIndex na poziom facility
       // facilityIndex 1 = Level 1
       // facilityIndex 2 = Level 2
@@ -121,29 +112,12 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
       setTotalPowerOutput(parsedData.totalPowerOutput);
       // Ustawiamy aktualne zużycie mocy
       setCurrentPowerUsage(parsedData.currPowerOutput);
-
-      console.log('Updated state:', {
-        facilityLevel: level,
-        maxMiners: parsedData.maxMiners,
-        totalPowerOutput: parsedData.totalPowerOutput,
-        currentPowerUsage: parsedData.currPowerOutput
-      });
     } catch (error) {
-      console.error('Error parsing facility data:', error);
     }
   }, [facilityData]);
 
   const powerPercentage = totalPowerOutput > 0 ? (currentPowerUsage / totalPowerOutput) * 100 : 0;
   const minersPercentage = maxMiners > 0 ? (minerTiles.length / maxMiners) * 100 : 0;
-
-  console.log('Calculated values:', {
-    currentPowerUsage,
-    totalPowerOutput,
-    powerPercentage,
-    minersPercentage,
-    minerTilesLength: minerTiles.length,
-    maxMiners
-  });
 
   const bgColor = useColorModeValue('gray.800', 'gray.900');
   const borderColor = useColorModeValue('gray.700', 'gray.700');

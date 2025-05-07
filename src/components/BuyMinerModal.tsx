@@ -126,6 +126,11 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     hash,
   });
 
+  const [buyTxHash, setBuyTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const { isLoading: isBuyingLoading, isSuccess: isBuyingSuccess } = useWaitForTransactionReceipt({
+    hash: buyTxHash,
+  });
+
   const handleApprove = async () => {
     try {
       console.log('Approving MAXX tokens...');
@@ -156,7 +161,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     }
   };
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     if (!selectedTile) {
       toast({ title: 'Select a tile first!', status: 'warning' });
       return;
@@ -169,16 +174,41 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
       toast({ title: 'Approve MAXX first', status: 'warning' });
       return;
     }
-    const tx = {
-      address: MINING_ADDRESS as `0x${string}`,
-      abi: MINING_ABI,
-      functionName: 'buyMiner',
-      args: [selectedType + 2, selectedTile.x, selectedTile.y],
-    };
-    writeContract(tx);
-    onBuy(selectedType + 2, selectedTile);
-    onClose();
+
+    try {
+      const tx = {
+        address: MINING_ADDRESS as `0x${string}`,
+        abi: MINING_ABI,
+        functionName: 'buyMiner',
+        args: [selectedType + 2, selectedTile.x, selectedTile.y],
+      };
+      const hash = await writeContract(tx);
+      setBuyTxHash(hash as `0x${string}`);
+      toast({
+        title: 'Transaction sent!',
+        description: 'Waiting for confirmation...',
+        status: 'info',
+        duration: 5000,
+        isClosable: true
+      });
+    } catch (error: any) {
+      console.error('Buy error:', error);
+      toast({
+        title: 'Purchase failed',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (isBuyingSuccess) {
+      onClose();
+      window.location.reload();
+    }
+  }, [isBuyingSuccess, onClose]);
 
   const getMinerIcon = (index: number) => {
     switch (index) {
@@ -193,180 +223,186 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     }
   };
 
+  const handleClose = () => {
+    window.location.reload();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay backdropFilter="blur(8px)" bg="blackAlpha.800" />
-      <ModalContent
-        bg="neon.panel"
-        borderRadius="lg"
-        border="2.5px solid"
-        borderColor="neon.blue"
-        boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
-        fontFamily="'Press Start 2P', monospace"
-        position="relative"
-        _before={{
-          content: '""',
-          position: 'absolute',
-          inset: 0,
-          borderRadius: "lg",
-          boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
-          pointerEvents: "none",
-          opacity: 0.5,
-          zIndex: 0,
-        }}
-      >
-        <ModalHeader color="#fff" textShadow="0 0 8px #00E8FF">BUY MINER</ModalHeader>
-        <ModalCloseButton color="#fff" _hover={{ color: 'neon.pink' }} />
-        <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <Box>
-              <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">SELECT MINER TYPE</Text>
-              <VStack spacing={2} align="stretch">
-                {MINER_TYPE_IDS.map((id) => {
-                  const minerArray = [minerArray1, minerArray2, minerArray3][id];
-                  const hashrate = minerArray ? Number(minerArray[4]) : MINER_TYPE_HASHRATE[id];
-                  const power = minerArray ? Number(minerArray[5]) : MINER_TYPE_ENERGY[id];
-                  const cost = minerArray ? Number(minerArray[6]) / 1e18 : MINER_TYPE_PRICES[id];
+    <>
+      {isBuyingLoading && (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" position="fixed" top={0} left={0} right={0} bottom={0} zIndex={2000} bg="rgba(24,26,32,0.85)">
+          <Spinner size="xl" color="#00E8FF" thickness="4px" speed="0.65s" />
+          <Text mt={4} fontFamily="'Press Start 2P', monospace">loading</Text>
+        </Box>
+      )}
+      <Modal isOpen={isOpen} onClose={handleClose} isCentered>
+        <ModalOverlay backdropFilter="blur(8px)" bg="blackAlpha.800" />
+        <ModalContent
+          bg="neon.panel"
+          borderRadius="lg"
+          border="2.5px solid"
+          borderColor="neon.blue"
+          boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
+          fontFamily="'Press Start 2P', monospace"
+          position="relative"
+          _before={{
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: "lg",
+            boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
+            pointerEvents: "none",
+            opacity: 0.5,
+            zIndex: 0,
+          }}
+        >
+          <ModalHeader color="#fff" textShadow="0 0 8px #00E8FF">BUY MINER</ModalHeader>
+          <ModalCloseButton color="#fff" _hover={{ color: 'neon.pink' }} />
+          <ModalBody>
+            <VStack spacing={4} align="stretch">
+              <Box>
+                <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">SELECT MINER TYPE</Text>
+                <VStack spacing={2} align="stretch">
+                  {MINER_TYPE_IDS.map((id) => {
+                    const minerArray = [minerArray1, minerArray2, minerArray3][id];
+                    const hashrate = minerArray ? Number(minerArray[4]) : MINER_TYPE_HASHRATE[id];
+                    const power = minerArray ? Number(minerArray[5]) : MINER_TYPE_ENERGY[id];
+                    const cost = minerArray ? Number(minerArray[6]) / 1e18 : MINER_TYPE_PRICES[id];
 
-                  return (
-                    <Box
-                      key={id}
-                      p={4}
-                      borderRadius="md"
-                      border="2px solid"
-                      borderColor={selectedType === id ? 'neon.blue' : 'gray.600'}
-                      bg={selectedType === id ? 'neon.dark' : 'transparent'}
-                      cursor="pointer"
-                      onClick={() => setSelectedType(id)}
-                      _hover={{
-                        borderColor: 'neon.blue',
-                        boxShadow: '0 0 8px #00E8FF',
-                      }}
-                      transition="all 0.2s"
-                    >
-                      <HStack spacing={4} align="center">
-                        <Box>
-                          {getMinerIcon(id)}
-                        </Box>
-                        <VStack align="start" spacing={1} flex={1}>
-                          <Text color="#fff" fontSize="sm" textShadow="0 0 8px #00E8FF">{MINER_TYPE_LABELS[id]}</Text>
-                          <HStack spacing={4}>
-                            <Text color="#fff" fontSize="xs">HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{hashrate} GH/s</span></Text>
-                            <Text color="#fff" fontSize="xs">POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{power} GW</span></Text>
-                            <Text color="#fff" fontSize="xs">PRICE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{cost} MAXX</span></Text>
-                          </HStack>
-                        </VStack>
-                      </HStack>
-                    </Box>
-                  );
-                })}
-              </VStack>
-            </Box>
+                    return (
+                      <Box
+                        key={id}
+                        p={4}
+                        borderRadius="md"
+                        border="2px solid"
+                        borderColor={selectedType === id ? 'neon.blue' : 'gray.600'}
+                        bg={selectedType === id ? 'neon.dark' : 'transparent'}
+                        cursor="pointer"
+                        onClick={() => setSelectedType(id)}
+                        _hover={{
+                          borderColor: 'neon.blue',
+                          boxShadow: '0 0 8px #00E8FF',
+                        }}
+                        transition="all 0.2s"
+                      >
+                        <HStack spacing={4} align="center">
+                          <Box>
+                            {getMinerIcon(id)}
+                          </Box>
+                          <VStack align="start" spacing={1} flex={1}>
+                            <Text color="#fff" fontSize="sm" textShadow="0 0 8px #00E8FF">{MINER_TYPE_LABELS[id]}</Text>
+                            <HStack spacing={4}>
+                              <Text color="#fff" fontSize="xs">HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{hashrate} GH/s</span></Text>
+                              <Text color="#fff" fontSize="xs">POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{power} GW</span></Text>
+                              <Text color="#fff" fontSize="xs">PRICE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{cost} MAXX</span></Text>
+                            </HStack>
+                          </VStack>
+                        </HStack>
+                      </Box>
+                    );
+                  })}
+                </VStack>
+              </Box>
 
-            <Box mt={4}>
-              <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">TOTAL</Text>
-              <VStack align="start" spacing={1}>
-                <Text color="#fff" fontSize="sm">
-                  TOTAL COST: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalCost} MAXX</span>
-                </Text>
-                <Text color="#fff" fontSize="sm">
-                  TOTAL HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalHashrate} GH/s</span>
-                </Text>
-                <Text color="#fff" fontSize="sm">
-                  TOTAL POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalPower} GW</span>
-                </Text>
-              </VStack>
-            </Box>
-
-            <Box mt={4}>
-              <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <Text color="#fff" fontSize="sm">BALANCE:</Text>
-                  <Text color={hasEnoughBalance ? 'neon.green' : 'neon.pink'} fontSize="sm">
-                    {maxxBalance ? Number(maxxBalance.formatted).toFixed(2) : '0'} MAXX
+              <Box mt={4}>
+                <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">TOTAL</Text>
+                <VStack align="start" spacing={1}>
+                  <Text color="#fff" fontSize="sm">
+                    TOTAL COST: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalCost} MAXX</span>
                   </Text>
-                </HStack>
-                <HStack justify="space-between">
-                  <Text color="#fff" fontSize="sm">ALLOWANCE:</Text>
-                  <Text color={hasEnoughAllowance ? 'neon.green' : 'neon.pink'} fontSize="sm">
-                    {allowance ? Number(formatEther(allowance as bigint)).toFixed(2) : '0'} MAXX
+                  <Text color="#fff" fontSize="sm">
+                    TOTAL HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalHashrate} GH/s</span>
                   </Text>
-                </HStack>
-                <HStack justify="space-between">
-                  <Text color="#fff" fontSize="sm">COST:</Text>
-                  <Text color="neon.blue" fontSize="sm">{totalCost} MAXX</Text>
-                </HStack>
-              </VStack>
-            </Box>
+                  <Text color="#fff" fontSize="sm">
+                    TOTAL POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalPower} GW</span>
+                  </Text>
+                </VStack>
+              </Box>
 
-            <Box mt={4}>
-              {!hasEnoughAllowance ? (
-                <Button
-                  w="full"
-                  colorScheme="blue"
-                  bg="neon.blue"
-                  color="white"
-                  _hover={{
-                    bg: 'neon.pink',
-                    boxShadow: '0 0 16px #FF00CC',
-                  }}
-                  onClick={handleApprove}
-                  isLoading={isApproving}
-                  loadingText="Approving..."
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="xs"
-                  px={6}
-                  py={4}
-                  borderRadius="md"
-                  border="2px solid"
-                  borderColor="neon.blue"
-                  _active={{
-                    transform: 'scale(0.95)',
-                  }}
-                  transition="all 0.2s"
-                  sx={{
-                    textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
-                  }}
-                >
-                  APPROVE MAXX
-                </Button>
-              ) : (
-                <Button
-                  w="full"
-                  colorScheme="blue"
-                  bg="neon.blue"
-                  color="white"
-                  _hover={{
-                    bg: 'neon.pink',
-                    boxShadow: '0 0 16px #FF00CC',
-                  }}
-                  onClick={handleBuy}
-                  isLoading={isBuying || isConfirming}
-                  loadingText={isBuying ? "Buying..." : "Confirming..."}
-                  isDisabled={!hasEnoughBalance}
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="xs"
-                  px={6}
-                  py={4}
-                  borderRadius="md"
-                  border="2px solid"
-                  borderColor="neon.blue"
-                  _active={{
-                    transform: 'scale(0.95)',
-                  }}
-                  transition="all 0.2s"
-                  sx={{
-                    textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
-                  }}
-                >
-                  BUY MINER
-                </Button>
-              )}
-            </Box>
-          </VStack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+              <Box mt={4}>
+                <VStack spacing={4} align="stretch">
+                  <HStack justify="space-between">
+                    <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">BALANCE:</Text>
+                    <Text color={hasEnoughBalance ? '#00FF99' : '#FF00CC'} fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">
+                      {maxxBalance ? Number(maxxBalance.formatted).toFixed(2) : '0'} MAXX
+                    </Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">COST:</Text>
+                    <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">{totalCost} MAXX</Text>
+                  </HStack>
+                </VStack>
+              </Box>
+
+              <Box mt={4}>
+                {!hasEnoughAllowance ? (
+                  <Button
+                    w="full"
+                    colorScheme="blue"
+                    bg="neon.blue"
+                    color="white"
+                    _hover={{
+                      bg: 'neon.pink',
+                      boxShadow: '0 0 16px #FF00CC',
+                    }}
+                    onClick={handleApprove}
+                    isLoading={isApproving}
+                    loadingText="Approving..."
+                    fontFamily="'Press Start 2P', monospace"
+                    fontSize="xs"
+                    px={6}
+                    py={4}
+                    borderRadius="md"
+                    border="2px solid"
+                    borderColor="neon.blue"
+                    _active={{
+                      transform: 'scale(0.95)',
+                    }}
+                    transition="all 0.2s"
+                    sx={{
+                      textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+                    }}
+                  >
+                    APPROVE MAXX
+                  </Button>
+                ) : (
+                  <Button
+                    w="full"
+                    colorScheme="blue"
+                    bg="neon.blue"
+                    color="white"
+                    _hover={{
+                      bg: 'neon.pink',
+                      boxShadow: '0 0 16px #FF00CC',
+                    }}
+                    onClick={handleBuy}
+                    isLoading={isBuying || isConfirming}
+                    loadingText={isBuying ? "Buying..." : "Confirming..."}
+                    isDisabled={!hasEnoughBalance}
+                    fontFamily="'Press Start 2P', monospace"
+                    fontSize="xs"
+                    px={6}
+                    py={4}
+                    borderRadius="md"
+                    border="2px solid"
+                    borderColor="neon.blue"
+                    _active={{
+                      transform: 'scale(0.95)',
+                    }}
+                    transition="all 0.2s"
+                    sx={{
+                      textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+                    }}
+                  >
+                    BUY MINER
+                  </Button>
+                )}
+              </Box>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

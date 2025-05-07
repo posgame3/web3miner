@@ -29,6 +29,7 @@ import { Interface } from 'ethers';
 import * as ethers from 'ethers';
 import UpgradeFacilityModal from '../components/UpgradeFacilityModal';
 import MinerInfoModal from '../components/MinerInfoModal';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 
 const DEFAULT_STARTER_MINER_TILE = { x: 0, y: 0 };
 
@@ -45,8 +46,11 @@ const Room = () => {
   const [starterMinerTile, setStarterMinerTile] = useState<TileCoords | null>(null);
   // Hooki do sprawdzania zajętych pól w gridzie
   const [occupiedCoords, setOccupiedCoords] = useState<{ [key: string]: boolean }>({});
-  // Logi do debugowania gridu
-  console.log('occupiedCoords:', occupiedCoords);
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [claimTxHash, setClaimTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const { isLoading: isClaimingLoading, isSuccess: isClaimingSuccess } = useWaitForTransactionReceipt({
+    hash: claimTxHash,
+  });
 
   // Onboarding: sprawdzanie facility i starter minera
   const { data: facility, isLoading: isFacilityLoading, refetch: refetchFacility } = useContractRead({
@@ -67,17 +71,14 @@ const Room = () => {
 
   const [hasFacility, setHasFacility] = useState(false);
   useEffect(() => {
-    console.log('facility:', facility);
     let has = false;
     if (Array.isArray(facility) && facility.length > 1) {
       has = Number(facility[1]) > 0; // maxMiners > 0
     }
-    console.log('hasFacility:', has);
     setHasFacility(has);
   }, [facility]);
 
   useEffect(() => {
-    console.log('address:', address, 'isConnected:', isConnected);
   }, [address, isConnected]);
 
   const { data: starterMiner, isLoading: isStarterMinerLoading } = useContractRead({
@@ -91,9 +92,6 @@ const Room = () => {
   useEffect(() => {
     setHasStarterMiner(!!starterMiner);
   }, [starterMiner]);
-
-  // Logi do debugowania gridu
-  console.log('occupiedCoords:', occupiedCoords);
 
   useEffect(() => {
     async function fetchOccupiedCoords() {
@@ -124,7 +122,6 @@ const Room = () => {
       setMinerTiles(miners);
     }
     fetchOccupiedCoords();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, hasFacility, gridSizeX, gridSizeY]);
 
   // Dodaj na górze komponentu Room:
@@ -134,7 +131,13 @@ const Room = () => {
     functionName: 'initialFacilityPrice',
   });
 
-  // Zakup facility (zgodnie z Ethermax)
+  const [facilityTxHash, setFacilityTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [isFacilityConfirmed, setIsFacilityConfirmed] = useState(false);
+  const { writeContractAsync } = useContractWrite();
+  const { isLoading: isFacilityConfirming, isSuccess: isFacilitySuccess } = useWaitForTransactionReceipt({
+    hash: facilityTxHash,
+  });
+
   const handleBuyFacility = async () => {
     try {
       if (!initialFacilityPrice) {
@@ -142,71 +145,75 @@ const Room = () => {
         return;
       }
       const referrer = localStorage.getItem('referrer') || '0x0000000000000000000000000000000000000000';
-      await writeContract({
+      const hash = await writeContractAsync({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'purchaseInitialFacility',
         args: [referrer],
         value: initialFacilityPrice as bigint,
+        chain: chainId,
+        account: address,
       });
-      setTimeout(() => {
-        refetchFacility();
-        window.location.reload();
-      }, 2000);
-      toast({ title: 'Facility purchased!', status: 'success', duration: 5000, isClosable: true });
+      setFacilityTxHash(hash as `0x${string}`);
+      toast({
+        title: 'Transaction sent!',
+        description: 'Waiting for confirmation...',
+        status: 'info',
+        duration: 5000,
+        isClosable: true
+      });
     } catch (e: any) {
-      toast({ title: 'Error purchasing facility', description: e.message, status: 'error', duration: 5000, isClosable: true });
+      toast({
+        title: 'Error purchasing facility',
+        description: e.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      });
     }
   };
 
+  useEffect(() => {
+    if (isFacilitySuccess) {
+      setIsFacilityConfirmed(true);
+    }
+  }, [isFacilitySuccess]);
+
   // Claim starter minera (zgodnie z Ethermax)
   const handleClaimStarterMiner = async () => {
-    if (!starterMinerTile) {
-      console.log('[DEBUG] Brak wybranego tile do claimowania starter minera');
-      return;
-    }
+    if (!starterMinerTile) return;
     const key = `${starterMinerTile.x},${starterMinerTile.y}`;
-    console.log('[DEBUG] Wybrany tile:', starterMinerTile, 'key:', key);
-    console.log('[DEBUG] occupiedCoords:', occupiedCoords);
     if (occupiedCoords[key]) {
       toast({ title: 'This tile is already occupied!', status: 'error', duration: 4000, isClosable: true });
-      console.log('[DEBUG] Tile jest już zajęty!');
       return;
     }
-    console.log('[DEBUG] hasFacility:', hasFacility);
-    console.log('[DEBUG] hasStarterMiner:', hasStarterMiner);
-    console.log('[DEBUG] address:', address);
-    console.log('[DEBUG] Próbuję wywołać getFreeStarterMiner z:', starterMinerTile.x, starterMinerTile.y);
     try {
-      // Dodatkowo: sprawdź mapping acquiredStarterMiner i ownerToFacility
-      const miningIface = new Interface(MINING_ABI);
-      const dataAcquired = miningIface.encodeFunctionData('acquiredStarterMiner', [address]);
-      const dataFacility = miningIface.encodeFunctionData('ownerToFacility', [address]);
-      const acquired = await window.ethereum.request({
-        method: 'eth_call',
-        params: [{ to: MINING_ADDRESS, data: dataAcquired }, 'latest'],
-      });
-      const facility = await window.ethereum.request({
-        method: 'eth_call',
-        params: [{ to: MINING_ADDRESS, data: dataFacility }, 'latest'],
-      });
-      console.log('[DEBUG] acquiredStarterMiner mapping:', acquired);
-      console.log('[DEBUG] ownerToFacility mapping:', facility);
-      await writeContract({
+      const hash = await writeContractAsync({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'getFreeStarterMiner',
         args: [starterMinerTile.x, starterMinerTile.y],
+        chain: chainId,
+        account: address,
       });
-      setTimeout(() => {
-        refetchFacility();
-      }, 2000);
-      toast({ title: 'Free miner claimed!', status: 'success', duration: 5000, isClosable: true });
+      setClaimTxHash(hash as `0x${string}`);
+      toast({
+        title: 'Transaction sent!',
+        description: 'Waiting for confirmation...',
+        status: 'info',
+        duration: 5000,
+        isClosable: true
+      });
     } catch (error: any) {
-      console.error('[DEBUG] Error claiming free miner:', error);
       toast({ title: 'Error claiming free miner', description: error.message, status: 'error', duration: 5000, isClosable: true });
     }
   };
+
+  useEffect(() => {
+    if (isClaimingSuccess) {
+      window.location.reload();
+    }
+  }, [isClaimingSuccess]);
 
   // Pobieranie minerów użytkownika z kontraktu (przykład: pętla po gridzie)
   const miners = [] as TileCoords[];
@@ -264,7 +271,6 @@ const Room = () => {
 
   const handleApproveMAXX = async () => {
     try {
-      console.log('Zatwierdzanie tokenów MAXX...');
       const hash = await writeContract({
         address: ETHERMAX_ADDRESS as `0x${string}`,
         abi: ETHERMAX_ABI,
@@ -272,7 +278,6 @@ const Room = () => {
         args: [MINING_ADDRESS, parseEther('1000000')], // Duża wartość, żeby nie trzeba było często zatwierdzać
       });
       
-      console.log('Transakcja zatwierdzenia wysłana:', hash);
       toast({ 
         title: 'Zatwierdzono tokeny MAXX',
         status: 'success',
@@ -280,7 +285,6 @@ const Room = () => {
         isClosable: true,
       });
     } catch (error: any) {
-      console.error('Błąd podczas zatwierdzania:', error);
       toast({
         title: 'Błąd podczas zatwierdzania',
         description: error.message,
@@ -348,13 +352,11 @@ const Room = () => {
 
   const handleStartMining = async () => {
     try {
-      console.log('Start mining: start', { address });
       const hash = await writeContract({
         abi: MINING_ABI,
         address: MINING_ADDRESS as `0x${string}`,
         functionName: 'startMining',
       });
-      console.log('Start mining: tx sent', hash);
       toast({
         title: 'Mining started',
         status: 'success',
@@ -362,7 +364,6 @@ const Room = () => {
         isClosable: true,
       });
     } catch (error: any) {
-      console.error('Start mining: error', error);
       toast({
         title: 'Error starting mining',
         description: error.message,
@@ -479,7 +480,6 @@ const Room = () => {
       setMinersData(miners);
     }
     fetchMinersData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, hasFacility, gridSizeX, gridSizeY, minerTiles, starterMinerTile, starterMinerData]);
 
   // Stan do modala upgradu
@@ -492,31 +492,30 @@ const Room = () => {
   const [isMinerInfoModalOpen, setMinerInfoModalOpen] = useState(false);
   const [selectedMinerCoords, setSelectedMinerCoords] = useState<TileCoords | null>(null);
 
+  const [upgradeTxHash, setUpgradeTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const { isLoading: isUpgradeLoading, isSuccess: isUpgradeSuccess } = useWaitForTransactionReceipt({
+    hash: upgradeTxHash,
+  });
+
   const handleUpgrade = async (nextFacilityIndex: number) => {
     try {
-      console.log('Starting facility upgrade...');
-      console.log('Next facility index:', nextFacilityIndex);
-      
-      writeContract({
+      const hash = await writeContractAsync({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'buyNewFacility',
-        args: [nextFacilityIndex]
+        args: [nextFacilityIndex],
+        chain: chainId,
+        account: address,
       });
-      
-      console.log('Upgrade transaction sent');
-      toast({ 
-        title: 'Confirm upgrade in MetaMask', 
-        status: 'info', 
-        duration: 5000, 
-        isClosable: true 
+      setUpgradeTxHash(hash as `0x${string}`);
+      toast({
+        title: 'Transaction sent!',
+        description: 'Waiting for confirmation...',
+        status: 'info',
+        duration: 5000,
+        isClosable: true
       });
-      
-      setTimeout(() => {
-        refetchFacility();
-      }, 2000);
     } catch (e: any) {
-      console.error('Upgrade error:', e);
       toast({ 
         title: 'Upgrade failed', 
         description: e.message, 
@@ -555,88 +554,309 @@ const Room = () => {
     );
   }
   if (!hasFacility) {
+    if (isFacilityConfirming) {
+      return (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center">
+          <Spinner size="xl" color="#00E8FF" thickness="4px" speed="0.65s" />
+          <Text mt={4} fontFamily="'Press Start 2P', monospace">loading</Text>
+        </Box>
+      );
+    }
+    if (isFacilityConfirmed) {
+      return (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center">
+          <Text fontFamily="'Press Start 2P', monospace" color="#00E8FF" fontSize="lg" mb={6}>
+            Facility purchased!
+          </Text>
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            colorScheme="blue"
+            bg="neon.blue"
+            color="white"
+            _hover={{ bg: 'neon.pink', boxShadow: '0 0 16px #FF00CC' }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="md"
+            px={8}
+            py={6}
+            borderRadius="md"
+            border="2px solid"
+            borderColor="neon.blue"
+            _active={{ transform: 'scale(0.95)' }}
+            onClick={() => window.location.reload()}
+            transition="all 0.2s"
+            sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
+          >
+            Start mining
+          </Button>
+        </Box>
+      );
+    }
     return (
-      <Box bg="#181A20" minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" borderRadius="md" border="2px solid #00E8FF" boxShadow="0 0 8px #00E8FF55" mt={10}>
-        <Text color="#fff" fontFamily="'Press Start 2P', monospace" fontSize="lg" mb={6} textAlign="center">
-          YOU DON&apos;T HAVE A SPACE TO MINE!
-        </Text>
-        <Button
-          colorScheme="orange"
-          borderColor="#FF9900"
-          color="#FF9900"
-          variant="outline"
+      <Box
+        bg="neon.panel"
+        minH="60vh"
+        display="flex"
+        flexDir="column"
+        alignItems="center"
+        justifyContent="center"
+        borderRadius="lg"
+        border="2.5px solid"
+        borderColor="neon.blue"
+        boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
+        mt={10}
+        p={8}
+        fontFamily="'Press Start 2P', monospace"
+        position="relative"
+        _before={{
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          borderRadius: "lg",
+          boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
+          pointerEvents: "none",
+          opacity: 0.5,
+          zIndex: 0,
+        }}
+      >
+        <Text
+          color="#00E8FF"
           fontFamily="'Press Start 2P', monospace"
           fontSize="md"
-          px={8}
-          py={6}
-          onClick={handleBuyFacility}
-          isLoading={isPending}
+          mb={2}
+          textAlign="center"
+          textShadow="0 0 8px #00E8FF"
+          letterSpacing={1}
         >
-          BUY FACILITY
-        </Button>
+          Buy Facility and start earning!
+        </Text>
+        <Text
+          color="#fff"
+          fontFamily="'Press Start 2P', monospace"
+          fontSize="lg"
+          mb={6}
+          textAlign="center"
+          textShadow="0 0 8px #00E8FF"
+          letterSpacing={1}
+        >
+          YOU DON&apos;T HAVE A SPACE TO MINE!
+        </Text>
+        <HStack spacing={4} mt={4}>
+          <Button
+            colorScheme="blue"
+            bg="neon.blue"
+            color="white"
+            _hover={{
+              bg: 'neon.pink',
+              boxShadow: '0 0 16px #FF00CC',
+            }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="xs"
+            px={6}
+            py={4}
+            borderRadius="md"
+            border="2px solid"
+            borderColor="neon.blue"
+            _active={{
+              transform: 'scale(0.95)',
+            }}
+            onClick={handleBuyFacility}
+            isLoading={isPending}
+            transition="all 0.2s"
+            sx={{
+              textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+            }}
+          >
+            BUY FACILITY
+          </Button>
+          <Button
+            colorScheme="pink"
+            bg="neon.pink"
+            color="white"
+            _hover={{
+              bg: 'neon.blue',
+              boxShadow: '0 0 16px #00E8FF',
+            }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="xs"
+            px={6}
+            py={4}
+            borderRadius="md"
+            border="2px solid"
+            borderColor="neon.pink"
+            _active={{
+              transform: 'scale(0.95)',
+            }}
+            as="a"
+            href="https://docs.ethermax.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            transition="all 0.2s"
+            sx={{
+              textShadow: '0 0 10px #FF00CC88, 0 0 20px #FF00CC44'
+            }}
+          >
+            DOCS
+          </Button>
+        </HStack>
       </Box>
     );
   }
   if (!hasStarterMiner) {
+    if (isClaimingLoading) {
+      return (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center">
+          <Spinner size="xl" color="#00E8FF" thickness="4px" speed="0.65s" />
+          <Text mt={4} fontFamily="'Press Start 2P', monospace">loading</Text>
+        </Box>
+      );
+    }
+    if (isClaimingSuccess) {
+      return (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center">
+          <Text fontFamily="'Press Start 2P', monospace" color="#00E8FF" fontSize="lg" mb={6}>
+            Free miner claimed!
+          </Text>
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            colorScheme="blue"
+            bg="neon.blue"
+            color="white"
+            _hover={{ bg: 'neon.pink', boxShadow: '0 0 16px #FF00CC' }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="md"
+            px={8}
+            py={6}
+            borderRadius="md"
+            border="2px solid"
+            borderColor="neon.blue"
+            _active={{ transform: 'scale(0.95)' }}
+            onClick={() => window.location.reload()}
+            transition="all 0.2s"
+            sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
+          >
+            Start mining
+          </Button>
+        </Box>
+      );
+    }
     // Renderuj grid do wyboru pozycji
     return (
       <Box bg="#181A20" minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" borderRadius="md" border="2px solid #00E8FF" boxShadow="0 0 8px #00E8FF55" mt={10}>
         <Text color="#fff" fontFamily="'Press Start 2P', monospace" fontSize="lg" mb={6} textAlign="center">
           CLAIM YOUR FREE MINER!
         </Text>
-        <Box mb={6}>
-          <Grid templateColumns={`repeat(${gridSizeX}, 40px)`} gap={2}>
-            {[...Array(gridSizeX)].map((_, x) =>
-              [...Array(gridSizeY)].map((_, y) => {
-                const selected = starterMinerTile && starterMinerTile.x === x && starterMinerTile.y === y;
-                const occupied = occupiedCoords[`${x},${y}`];
-                return (
-                  <Box
-                    key={`${x}-${y}`}
-                    w="40px"
-                    h="40px"
-                    border="2px solid #00E8FF"
-                    bg={selected ? '#00E8FF' : occupied ? '#444' : '#23272F'}
-                    cursor={occupied ? 'not-allowed' : 'pointer'}
-                    onClick={() => !occupied && setStarterMinerTile({ x, y })}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    fontFamily="'Press Start 2P', monospace"
-                    color={selected ? '#181A20' : occupied ? '#888' : '#00E8FF'}
-                    fontWeight="bold"
-                  >
-                    {x},{y}
-                  </Box>
-                );
-              })
-            )}
-          </Grid>
-        </Box>
-        <Button
-          colorScheme="orange"
-          borderColor="#FF9900"
-          color="#FF9900"
-          variant="outline"
+        <Box
+          bg="neon.panel"
+          borderRadius="lg"
+          border="2.5px solid"
+          borderColor="neon.blue"
+          boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
+          p={6}
           fontFamily="'Press Start 2P', monospace"
-          fontSize="md"
-          px={8}
-          py={6}
-          onClick={handleClaimStarterMiner}
-          isLoading={isPending}
-          isDisabled={!starterMinerTile}
+          position="relative"
+          overflow="hidden"
+          display="flex"
+          flexDirection="column"
+          height="100%"
+          width={["100%", "100%", "600px"]}
+          maxW="100%"
+          minH="520px"
+          maxH="700px"
+          _before={{
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: "lg",
+            boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
+            pointerEvents: "none",
+            opacity: 0.5,
+            zIndex: 0,
+          }}
         >
-          CLAIM FREE MINER
-        </Button>
-        {/* Wyświetl info o darmowym minerze */}
-        {starterMinerData && Array.isArray(starterMinerData) && (
-          <Box mt={4} p={3} bg="#23272F" border="1px solid #00E8FF" borderRadius="md">
-            <Text color="#00E8FF" fontWeight="bold" fontSize="sm">FREE STARTER MINER</Text>
-            <Text color="#fff" fontSize="xs">Hashrate: <b style={{ color: '#00E8FF' }}>{starterMinerData[4]?.toString()}</b></Text>
-            <Text color="#fff" fontSize="xs">Power: <b style={{ color: '#00E8FF' }}>{starterMinerData[5]?.toString()}</b></Text>
-            <Text color="#fff" fontSize="xs">In production: <b style={{ color: '#00E8FF' }}>{starterMinerData[7] ? 'Yes' : 'No'}</b></Text>
+          <Box flex="1" overflow="hidden" position="relative" display="flex" alignItems="center" justifyContent="center" minH="380px" minW="380px" maxW="100%">
+            <MiningGrid
+              selected={starterMinerTile}
+              onSelect={setStarterMinerTile}
+              minerTiles={[]}
+              starterMinerTile={starterMinerTile}
+              gridSizeX={gridSizeX}
+              gridSizeY={gridSizeY}
+              tileSize={96}
+            />
           </Box>
-        ) as any}
+          <Box display="flex" flexDirection="column" alignItems="center" gap={4} mt={6}>
+            <Button
+              colorScheme="blue"
+              bg="neon.blue"
+              color="white"
+              _hover={{
+                bg: 'neon.pink',
+                boxShadow: '0 0 16px #FF00CC',
+              }}
+              onClick={handleClaimStarterMiner}
+              isLoading={isPending}
+              isDisabled={!starterMinerTile}
+              fontFamily="'Press Start 2P', monospace"
+              fontSize="xs"
+              px={6}
+              py={4}
+              borderRadius="md"
+              border="2px solid"
+              borderColor="neon.blue"
+              _active={{
+                transform: 'scale(0.95)',
+              }}
+              transition="all 0.2s"
+              sx={{
+                textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+              }}
+            >
+              CLAIM FREE MINER
+            </Button>
+          </Box>
+        </Box>
+        {/* Przeniesione info o darmowym minerze poniżej gridu */}
+        {starterMinerData && Array.isArray(starterMinerData) && (
+          <Box
+            mt={6}
+            p={4}
+            borderRadius="md"
+            bg="gray.700"
+            borderWidth="1px"
+            borderColor="#00E8FF44"
+            position="relative"
+            minW={["90%", "420px"]}
+            maxW="520px"
+            _before={{
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              borderRadius: 'md',
+              boxShadow: '0 0 16px #00E8FF22',
+              pointerEvents: 'none',
+              opacity: 0.5,
+              zIndex: 0,
+            }}
+          >
+            <VStack spacing={2} align="start">
+              <Text color="#00E8FF" fontSize="sm" fontWeight="bold" sx={{ textShadow: '0 0 8px #00E8FF44' }}>
+                FREE STARTER MINER
+              </Text>
+              <HStack>
+                <Text color="gray.400" fontSize="xs">HASHRATE:</Text>
+                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[4]?.toString()} GH/s</Text>
+              </HStack>
+              <HStack>
+                <Text color="gray.400" fontSize="xs">POWER:</Text>
+                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[5]?.toString()} GW</Text>
+              </HStack>
+              <HStack>
+                <Text color="gray.400" fontSize="xs">IN PRODUCTION:</Text>
+                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[7] ? 'YES' : 'NO'}</Text>
+              </HStack>
+            </VStack>
+          </Box>
+        )}
       </Box>
     );
   }
@@ -730,6 +950,39 @@ const Room = () => {
         nextFacilityIndex={nextFacilityIndex}
         onUpgrade={handleUpgrade}
       />
+      {isUpgradeLoading && (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" position="fixed" top={0} left={0} right={0} bottom={0} zIndex={2000} bg="rgba(24,26,32,0.85)">
+          <Spinner size="xl" color="#00E8FF" thickness="4px" speed="0.65s" />
+          <Text mt={4} fontFamily="'Press Start 2P', monospace">loading</Text>
+        </Box>
+      )}
+      {isUpgradeSuccess && (
+        <Box minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" position="fixed" top={0} left={0} right={0} bottom={0} zIndex={2000} bg="rgba(24,26,32,0.85)">
+          <Text fontFamily="'Press Start 2P', monospace" color="#00E8FF" fontSize="lg" mb={6}>
+            Facility upgraded!
+          </Text>
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            colorScheme="blue"
+            bg="neon.blue"
+            color="white"
+            _hover={{ bg: 'neon.pink', boxShadow: '0 0 16px #FF00CC' }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="md"
+            px={8}
+            py={6}
+            borderRadius="md"
+            border="2px solid"
+            borderColor="neon.blue"
+            _active={{ transform: 'scale(0.95)' }}
+            onClick={() => window.location.reload()}
+            transition="all 0.2s"
+            sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
+          >
+            Go to next lvl
+          </Button>
+        </Box>
+      )}
       <MinerInfoModal
         isOpen={isMinerInfoModalOpen}
         onClose={() => setMinerInfoModalOpen(false)}

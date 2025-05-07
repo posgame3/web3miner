@@ -38,17 +38,12 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
     }
   });
 
-  console.log('Raw miners data from contract:', miners);
-  console.log('User address:', address);
-
   // Sort miners by minerIndex
   const sortedMiners = useMemo(() => {
     if (!Array.isArray(miners)) {
-      console.log('Miners is not an array:', miners);
       return [];
     }
     const sorted = [...miners].sort((a: any, b: any) => Number(a.minerIndex) - Number(b.minerIndex));
-    console.log('Sorted miners:', sorted);
     return sorted;
   }, [miners]);
 
@@ -57,36 +52,23 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
     const stats = getMinerStats(x, y);
     const hashrate = stats?.hashrate ? Number(stats.hashrate) : 0;
     
-    console.log('Getting icon for miner at position:', {
-      x,
-      y,
-      stats,
-      hashrate
-    });
-
     // Match icon based on hashrate ranges
     if (hashrate <= 120) {
-      console.log('Returning 💎 for hashrate <= 120');
       return <span role="img" aria-label="starter-miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>💎</span>;
     } else if (hashrate <= 320) {
-      console.log('Returning 💻 for hashrate <= 320');
       return <span role="img" aria-label="basic-miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>💻</span>;
     } else if (hashrate <= 600) {
-      console.log('Returning 🖥️ for hashrate <= 600');
       return <span role="img" aria-label="advanced-miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>🖥️</span>;
     } else if (hashrate <= 920) {
-      console.log('Returning ⚡ for hashrate <= 920');
       return <span role="img" aria-label="pro-miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>⚡</span>;
     }
     // Default icon for unknown hashrate
-    console.log('Returning default 💻 for unknown hashrate:', hashrate);
     return <span role="img" aria-label="miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>💻</span>;
   };
 
   const getMinerStyle = (x: number, y: number) => {
     // Starter miner
     if (starterMinerTile && starterMinerTile.x === x && starterMinerTile.y === y) {
-      console.log('Found starter miner at:', x, y);
       return {
         background: 'linear-gradient(45deg, #00E8FF 0%, #00E8FF55 100%)',
         boxShadow: '0 0 16px #00E8FF',
@@ -96,24 +78,15 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
 
     // Find miner data for this tile
     if (!Array.isArray(sortedMiners)) {
-      console.log('sortedMiners is not an array at:', x, y);
       return {};
     }
 
     const miner = sortedMiners.find((m: any) => {
       const match = Number(m.x) === x && Number(m.y) === y;
-      if (match) {
-        console.log('Found miner at:', x, y, 'with data:', {
-          minerIndex: m.minerIndex,
-          hashrate: m.hashrate,
-          powerConsumption: m.powerConsumption
-        });
-      }
       return match;
     });
 
     if (!miner) {
-      console.log('No miner found at:', x, y);
       return {};
     }
 
@@ -122,7 +95,6 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
       boxShadow: '0 0 16px #00E8FF',
       index: Number(miner.minerIndex)
     };
-    console.log('Returning style for miner at', x, y, ':', style);
     return style;
   };
 
@@ -138,11 +110,6 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
     const miner = sortedMiners.find((m: any) => Number(m.x) === x && Number(m.y) === y);
     if (!miner) return null;
 
-    console.log('Found miner stats at', x, y, ':', {
-      hashrate: miner.hashrate?.toString(),
-      power: miner.powerConsumption?.toString()
-    });
-
     return {
       hashrate: miner.hashrate?.toString() || '0',
       power: miner.powerConsumption?.toString() || '0'
@@ -151,21 +118,17 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
 
   const isFieldOccupied = (x: number, y: number) => {
     if (!Array.isArray(sortedMiners)) {
-      console.log('sortedMiners is not an array in isFieldOccupied');
       return false;
     }
 
     const hasMiner = sortedMiners.some((m: any) => {
       const match = Number(m.x) === x && Number(m.y) === y;
-      if (match) {
-        console.log('Found occupied field at:', x, y, 'with miner:', m);
-      }
       return match;
     });
 
     const isStarterMiner = starterMinerTile && starterMinerTile.x === x && starterMinerTile.y === y;
     if (isStarterMiner) {
-      console.log('Found starter miner at:', x, y);
+      return true;
     }
 
     return hasMiner || isStarterMiner;
