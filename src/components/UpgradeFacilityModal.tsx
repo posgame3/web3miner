@@ -134,7 +134,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'buyNewFacility',
-        args: [nextFacilityIndex]
+        args: []
       };
       
       console.log('Transaction config:', tx);
