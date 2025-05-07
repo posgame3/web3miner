@@ -1,0 +1,3 @@
+[submodule "web3miner"]
+    path = web3miner
+    url = https://github.com/posgame3/web3miner.git 
