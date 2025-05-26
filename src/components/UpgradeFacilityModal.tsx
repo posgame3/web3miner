@@ -101,11 +101,11 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
     query: { enabled: isOpen },
   }) as { data: Facility | undefined };
 
-  // MAXX balance
+  // PXL balance
   const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
 
   // Fixed cost for level 2 upgrade
-  const fixedUpgradeCost = BigInt(1440 * 10**18); // 1440 MAXX in wei
+  const fixedUpgradeCost = BigInt(1440 * 10**18); // 1440 PXL in wei
   const hasEnoughBalance = maxxBalance && maxxBalance.value >= fixedUpgradeCost;
 
   const { data: allowance, refetch: refetchAllowance } = useContractRead({
@@ -125,9 +125,11 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
         abi: ETHERMAX_ABI,
         functionName: 'approve',
         args: [MINING_ADDRESS, parseEther('1000000')],
+        chain: undefined,
+        account: address
       });
       toast({
-        title: 'Approving MAXX tokens...',
+        title: 'Approving PXL tokens...',
         description: 'Please confirm the transaction in your wallet',
         status: 'info',
         duration: 5000,
@@ -147,7 +149,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
 
   const handleUpgrade = async () => {
     if (!hasEnoughBalance) {
-      toast({ title: 'Not enough MAXX', status: 'error' });
+      toast({ title: 'Not enough PXL', status: 'error' });
       return;
     }
 
@@ -166,29 +168,32 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'buyNewFacility',
-        args: []
+        args: [],
+        chain: undefined,
+        account: address
       };
       
       const hash = await writeContractAsync(tx);
-      
-      toast({ 
-        title: 'Confirm upgrade in MetaMask', 
-        status: 'info', 
-        duration: 5000, 
-        isClosable: true 
-      });
+      if (hash) {
+        toast({ 
+          title: 'Confirm upgrade in MetaMask', 
+          status: 'info', 
+          duration: 5000, 
+          isClosable: true 
+        });
 
-      // Wait for transaction to be mined
-      const receipt = await window.ethereum.request({
-        method: 'eth_getTransactionReceipt',
-        params: [hash],
-      });
+        // Wait for transaction to be mined
+        const receipt = await window.ethereum.request({
+          method: 'eth_getTransactionReceipt',
+          params: [hash],
+        });
 
-      if (receipt) {
-        onUpgrade(nextFacilityIndex);
-        onClose();
-        // Force page reload after successful upgrade
-        window.location.reload();
+        if (receipt) {
+          onUpgrade(nextFacilityIndex);
+          onClose();
+          // Force page reload after successful upgrade
+          window.location.reload();
+        }
       }
     } catch (e: any) {
       toast({ 

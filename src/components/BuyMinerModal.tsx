@@ -54,7 +54,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
   const toast = useToast();
   const { address } = useAccount();
 
-  // Saldo MAXX
+  // Saldo PXL
   const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
 
   // Allowance
@@ -117,7 +117,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
   const hasEnoughBalance = maxxBalance && maxxBalance.value && maxxBalance.value >= minerPrice;
   const hasEnoughAllowance = allowance && typeof allowance === 'bigint' && allowance >= minerPrice;
 
-  // Approve MAXX
+  // Approve PXL
   const { writeContract: writeApprove, isPending: isApproving } = useContractWrite();
 
   // Kupno minera
@@ -134,17 +134,19 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
 
   const handleApprove = async () => {
     try {
-      console.log('Approving MAXX tokens...');
+      console.log('Approving PXL tokens...');
       await writeApprove({
         address: ETHERMAX_ADDRESS as `0x${string}`,
         abi: ETHERMAX_ABI,
         functionName: 'approve',
         args: [MINING_ADDRESS, parseEther('1000000')],
+        chain: undefined,
+        account: address
       });
       
       console.log('Approval transaction sent');
       toast({ 
-        title: 'Approving MAXX tokens...',
+        title: 'Approving PXL tokens...',
         description: 'Please confirm the transaction in your wallet',
         status: 'info',
         duration: 5000,
@@ -182,16 +184,20 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
         abi: MINING_ABI,
         functionName: 'buyMiner',
         args: [selectedType + 2, selectedTile.x, selectedTile.y],
+        chain: undefined,
+        account: address
       };
       const hash = await writeContract(tx);
-      setBuyTxHash(hash as `0x${string}`);
-      toast({
-        title: 'Transaction sent!',
-        description: 'Waiting for confirmation...',
-        status: 'info',
-        duration: 5000,
-        isClosable: true
-      });
+      if (hash) {
+        setBuyTxHash(hash as `0x${string}`);
+        toast({
+          title: 'Transaction sent!',
+          description: 'Waiting for confirmation...',
+          status: 'info',
+          duration: 5000,
+          isClosable: true
+        });
+      }
     } catch (error: any) {
       console.error('Buy error:', error);
       toast({

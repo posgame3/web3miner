@@ -53,7 +53,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
 
   // ETH balance
   const { data: ethBalance } = useBalance({ address });
-  // MAXX balance
+  // PXL balance
   const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
 
   const { data: facilityData } = useContractRead({
