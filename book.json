@@ -1,0 +1,33 @@
+{
+  "title": "PIXELMINER Documentation",
+  "description": "Complete guide to PIXELMINER - Play, Earn, Upgrade!",
+  "structure": {
+    "readme": "docs/gitbook/docs/README.md",
+    "summary": "docs/gitbook/docs/SUMMARY.md"
+  },
+  "plugins": [
+    "theme-default",
+    "search",
+    "back-to-top-button",
+    "github",
+    "anchors",
+    "copy-code-button",
+    "highlight",
+    "sharing",
+    "toc"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/posgame3/web3miner"
+    },
+    "sharing": {
+      "facebook": true,
+      "twitter": true,
+      "google": false,
+      "weibo": false,
+      "instapaper": false,
+      "vk": false,
+      "all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+    }
+  }
+} 

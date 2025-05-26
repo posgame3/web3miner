@@ -1,0 +1,17 @@
+{
+  "name": "pixelminer-docs",
+  "version": "1.0.0",
+  "description": "PIXELMINER Documentation",
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:clean": "rimraf .vuepress/dist"
+  },
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^2.0.0-rc.0",
+    "@vuepress/plugin-medium-zoom": "^2.0.0-rc.0",
+    "@vuepress/plugin-search": "^2.0.0-rc.0",
+    "rimraf": "^5.0.5",
+    "vuepress": "^2.0.0-rc.0"
+  }
+} 

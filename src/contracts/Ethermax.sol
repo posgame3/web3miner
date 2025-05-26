@@ -17,7 +17,7 @@ contract Ethermax is ERC20, Ownable {
 
     mapping(address => bool) public authorizedMinters;
 
-    constructor(address _lpAddress) ERC20("Ethermax", "MAXX") Ownable(msg.sender) {
+    constructor(address _lpAddress) ERC20("PIXELMINER", "PXL") Ownable(msg.sender) {
         _mint(_lpAddress, 4_200_000e18); // Pre-mine for LP
     }
 

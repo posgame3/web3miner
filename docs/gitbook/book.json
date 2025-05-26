@@ -1,0 +1,43 @@
+{
+  "title": "PIXELMINER Documentation",
+  "description": "Complete guide to PIXELMINER - Play, Earn, Upgrade!",
+  "author": "PIXELMINER Team",
+  "language": "en",
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md"
+  },
+  "plugins": [
+    "theme-default",
+    "highlight",
+    "sharing",
+    "fontsettings",
+    "back-to-top-button",
+    "image-captions",
+    "anchors",
+    "code",
+    "copy-code-button",
+    "search",
+    "splitter",
+    "toc",
+    "expandable-chapters"
+  ],
+  "pluginsConfig": {
+    "image-captions": {
+      "caption": "Image _CAPTION_"
+    },
+    "theme-default": {
+      "showSummary": true,
+      "showLevel": true
+    },
+    "sharing": {
+      "facebook": true,
+      "twitter": true,
+      "google": false,
+      "weibo": false,
+      "instapaper": false,
+      "vk": false,
+      "all": ["facebook", "twitter"]
+    }
+  }
+} 
