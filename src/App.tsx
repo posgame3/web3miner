@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import Navbar from './components/Navbar';
 import Room from './pages/Room';
 import Mining from './pages/Mining';
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <Navbar />
           <Box maxW="1200px" mx="auto" px={4} py={8}>
             <Routes>
-              <Route path="/" element={<Navigate to="/room" replace />} />
+              <Route path="/" element={<Home />} />
               <Route path="/room" element={<Room />} />
               <Route path="/mining" element={<Mining />} />
             </Routes>

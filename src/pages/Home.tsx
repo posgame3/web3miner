@@ -1,0 +1,207 @@
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+  SimpleGrid,
+  Icon,
+  Container,
+  Button,
+  useColorModeValue,
+  Flex,
+  Link,
+} from '@chakra-ui/react';
+import { FaDiscord, FaTwitter, FaGithub } from 'react-icons/fa';
+import { Link as RouterLink } from 'react-router-dom';
+
+const Home = () => {
+  const neon = {
+    blue: '#00E8FF',
+    pink: '#FF2E63',
+    purple: '#B026FF',
+    green: '#00FF9D',
+    panel: '#181A20',
+    text: '#FFFFFF',
+    border: '#2D3748'
+  };
+
+  const Feature = ({ title, text }: { title: string; text: string }) => {
+    return (
+      <Box
+        p={6}
+        bg={neon.panel}
+        borderRadius="lg"
+        border="2px solid"
+        borderColor={neon.blue}
+        boxShadow={`0 0 16px ${neon.blue}44`}
+        _hover={{
+          transform: 'translateY(-5px)',
+          boxShadow: `0 0 20px ${neon.blue}88`,
+        }}
+        transition="all 0.3s ease"
+      >
+        <Heading size="md" mb={4} color={neon.blue}>
+          {title}
+        </Heading>
+        <Text color="gray.300">{text}</Text>
+      </Box>
+    );
+  };
+
+  return (
+    <Box bg="gray.900" minH="100vh" py={20}>
+      <Container maxW="container.xl">
+        {/* Hero Section */}
+        <VStack spacing={8} mb={20} textAlign="center">
+          <Heading
+            size="2xl"
+            bgGradient={`linear(to-r, ${neon.blue}, ${neon.purple})`}
+            bgClip="text"
+            fontWeight="extrabold"
+            letterSpacing="tight"
+          >
+            PIXELMINER
+          </Heading>
+          <Text fontSize="xl" color="gray.300" maxW="2xl">
+            Build your mining empire, earn PXL tokens, and become a part of the future of decentralized gaming.
+          </Text>
+          <Flex gap={4}>
+            <Button
+              as={RouterLink}
+              to="/room"
+              size="lg"
+              bg={neon.blue}
+              color="white"
+              _hover={{
+                bg: neon.pink,
+                boxShadow: `0 0 16px ${neon.pink}88`
+              }}
+            >
+              Start Mining
+            </Button>
+            <Button
+              as="a"
+              href="http://localhost:8080"
+              target="_blank"
+              size="lg"
+              variant="outline"
+              borderColor={neon.blue}
+              color={neon.blue}
+              _hover={{
+                bg: `${neon.blue}22`,
+                borderColor: neon.pink,
+                color: neon.pink
+              }}
+            >
+              Read Docs
+            </Button>
+          </Flex>
+        </VStack>
+
+        {/* Features Section */}
+        <VStack spacing={12} mb={20}>
+          <Heading color={neon.blue}>Key Features</Heading>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8} w="full">
+            <Feature
+              title="Play-to-Earn Gaming"
+              text="Build and manage your own mining facilities, purchase and upgrade miners, and earn PXL tokens through active gameplay."
+            />
+            <Feature
+              title="Token Economy"
+              text="PXL token as the primary in-game currency with real-time mining rewards and staking opportunities for passive income."
+            />
+            <Feature
+              title="Technical Innovation"
+              text="Built on Base L2 for low gas fees, with smart contract-based mining operations and transparent reward systems."
+            />
+          </SimpleGrid>
+        </VStack>
+
+        {/* Getting Started Section */}
+        <VStack spacing={8} mb={20}>
+          <Heading color={neon.blue}>Getting Started</Heading>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">
+            <Box
+              p={6}
+              bg={neon.panel}
+              borderRadius="lg"
+              border="2px solid"
+              borderColor={neon.blue}
+            >
+              <VStack align="start" spacing={4}>
+                <Heading size="md" color={neon.blue}>1. Connect Your Wallet</Heading>
+                <Text color="gray.300">Connect your Web3 wallet to start your mining journey.</Text>
+              </VStack>
+            </Box>
+            <Box
+              p={6}
+              bg={neon.panel}
+              borderRadius="lg"
+              border="2px solid"
+              borderColor={neon.blue}
+            >
+              <VStack align="start" spacing={4}>
+                <Heading size="md" color={neon.blue}>2. Buy Your First Miner</Heading>
+                <Text color="gray.300">Purchase your first mining facility and start earning PXL tokens.</Text>
+              </VStack>
+            </Box>
+            <Box
+              p={6}
+              bg={neon.panel}
+              borderRadius="lg"
+              border="2px solid"
+              borderColor={neon.blue}
+            >
+              <VStack align="start" spacing={4}>
+                <Heading size="md" color={neon.blue}>3. Start Mining</Heading>
+                <Text color="gray.300">Your miners will automatically start producing PXL tokens.</Text>
+              </VStack>
+            </Box>
+            <Box
+              p={6}
+              bg={neon.panel}
+              borderRadius="lg"
+              border="2px solid"
+              borderColor={neon.blue}
+            >
+              <VStack align="start" spacing={4}>
+                <Heading size="md" color={neon.blue}>4. Upgrade & Expand</Heading>
+                <Text color="gray.300">Upgrade your facilities and expand your mining operation.</Text>
+              </VStack>
+            </Box>
+          </SimpleGrid>
+        </VStack>
+
+        {/* Community Section */}
+        <VStack spacing={8}>
+          <Heading color={neon.blue}>Join Our Community</Heading>
+          <Flex gap={6}>
+            <Link
+              href="https://discord.gg/pixelminer"
+              target="_blank"
+              _hover={{ color: neon.pink }}
+            >
+              <Icon as={FaDiscord} w={8} h={8} color={neon.blue} />
+            </Link>
+            <Link
+              href="https://twitter.com/pixelminer"
+              target="_blank"
+              _hover={{ color: neon.pink }}
+            >
+              <Icon as={FaTwitter} w={8} h={8} color={neon.blue} />
+            </Link>
+            <Link
+              href="https://github.com/posgame3/web3miner"
+              target="_blank"
+              _hover={{ color: neon.pink }}
+            >
+              <Icon as={FaGithub} w={8} h={8} color={neon.blue} />
+            </Link>
+          </Flex>
+        </VStack>
+      </Container>
+    </Box>
+  );
+};
+
+export default Home; 

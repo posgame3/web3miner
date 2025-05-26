@@ -66,7 +66,7 @@ const Navbar = () => {
         <Flex alignItems={'center'}>
           <ChakraLink 
             as={RouterLink} 
-            to="/room" 
+            to="/" 
             fontSize="xl" 
             fontWeight="bold"
             color={neon.blue}
@@ -133,8 +133,9 @@ const Navbar = () => {
               Stake
             </ChakraLink>
             <ChakraLink 
-              as={RouterLink} 
-              to="/about" 
+              href="http://localhost:8080" 
+              target="_blank"
+              rel="noopener noreferrer"
               px={3} 
               py={2} 
               rounded={'md'}
@@ -147,7 +148,7 @@ const Navbar = () => {
                 textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
               }}
             >
-              About
+              Docs
             </ChakraLink>
             <ChakraLink 
               href="https://twitter.com/ethermax" 
