@@ -139,17 +139,19 @@ const MiningRig = () => {
           <>
             <Box>
               <HStack justify="space-between" mb={2}>
-                <Text color="gray.400">Your Hash Rate</Text>
+                <Text color="gray.400" textAlign="left" flex="1">Hashrate</Text>
                 <AnimatePresence mode="wait">
                   <MotionText
                     key={hashRate?.toString()}
-                    color={neon.green}
+                    color={neon.pink}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
+                    textAlign="right"
+                    flex="1"
                     sx={{
-                      textShadow: `0 0 10px ${neon.green}88, 0 0 20px ${neon.green}44`
+                      textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
                     }}
                   >
                     {hashRate?.toString() ?? '...'} GH/s
@@ -160,7 +162,30 @@ const MiningRig = () => {
 
             <Box>
               <HStack justify="space-between" mb={2}>
-                <Text color="gray.400">Mined Per Day</Text>
+                <Text color="gray.400" textAlign="left" flex="1">Pending Rewards</Text>
+                <AnimatePresence mode="wait">
+                  <MotionText
+                    key={pendingRewards?.toString()}
+                    color={neon.green}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    textAlign="right"
+                    flex="1"
+                    sx={{
+                      textShadow: `0 0 10px ${neon.green}88, 0 0 20px ${neon.green}44`
+                    }}
+                  >
+                    {typeof pendingRewards === 'bigint' ? formatEther(pendingRewards) : '0'} PXL
+                  </MotionText>
+                </AnimatePresence>
+              </HStack>
+            </Box>
+
+            <Box>
+              <HStack justify="space-between" mb={2}>
+                <Text color="gray.400" textAlign="left" flex="1">Mined Per Day</Text>
                 <AnimatePresence mode="wait">
                   <MotionText
                     key={minedPerDay.toString()}
@@ -169,11 +194,13 @@ const MiningRig = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
+                    textAlign="right"
+                    flex="1"
                     sx={{
                       textShadow: `0 0 10px ${neon.purple}88, 0 0 20px ${neon.purple}44`
                     }}
                   >
-                    {minedPerDay.toFixed(4)} MAXX
+                    {minedPerDay.toFixed(4)} PXL
                   </MotionText>
                 </AnimatePresence>
               </HStack>
@@ -181,7 +208,7 @@ const MiningRig = () => {
 
             <Box>
               <HStack justify="space-between" mb={2}>
-                <Text color="gray.400">Network Share</Text>
+                <Text color="gray.400" textAlign="left" flex="1">Network Share</Text>
                 <AnimatePresence mode="wait">
                   <MotionText
                     key={typeof hashRate === 'bigint' && typeof totalHashrate === 'bigint' && totalHashrate > 0n
@@ -192,6 +219,8 @@ const MiningRig = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
+                    textAlign="right"
+                    flex="1"
                     sx={{
                       textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
                     }}
@@ -266,7 +295,7 @@ const MiningRig = () => {
               transform: 'scale(1.05)',
             }}
             onClick={() => {
-              console.log('Claim mined $MAXX');
+              console.log('Claim mined $PXL');
               writeContract({
                 address: MINING_ADDRESS as `0x${string}`,
                 abi: MINING_ABI,
@@ -301,7 +330,7 @@ const MiningRig = () => {
               }
             }}
           >
-            CLAIM {formattedPendingRewards} MAXX
+            CLAIM {formattedPendingRewards} PXL
           </Button>
         </Box>
       </VStack>

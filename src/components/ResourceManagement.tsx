@@ -188,7 +188,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
               textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
             }}
           >
-            Resource Management
+            PIXELMINER RESOURCE MANAGEMENT
           </Text>
         </HStack>
 
@@ -229,7 +229,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
 
         <Box>
           <HStack justify="space-between" mb={2}>
-            <Text color="gray.400">MAXX Balance</Text>
+            <Text color="gray.400">PXL Balance</Text>
             <AnimatePresence mode="wait">
               <MotionText
                 key={maxxBalance ? Number(ethers.formatEther(maxxBalance.value)).toFixed(2) : '0'}
@@ -242,7 +242,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
                   textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
                 }}
               >
-                {maxxBalance ? Number(ethers.formatEther(maxxBalance.value)).toFixed(2) : '0'} MAXX
+                {maxxBalance ? Number(ethers.formatEther(maxxBalance.value)).toFixed(2) : '0'} PXL
               </MotionText>
             </AnimatePresence>
           </HStack>
@@ -417,7 +417,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
               <HStack>
                 <Text color="gray.400" fontSize="xs">Upgrade Cost:</Text>
                 <Text color={neon.pink} fontSize="xs" sx={{ textShadow: `0 0 8px ${neon.pink}44` }}>
-                  {facilityLevels[facilityLevel]?.upgradeCost} MAXX
+                  {facilityLevels[facilityLevel]?.upgradeCost} PXL
                 </Text>
               </HStack>
             </VStack>

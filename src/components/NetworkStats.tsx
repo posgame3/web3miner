@@ -105,13 +105,13 @@ const NetworkStats = () => {
               textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
             }}
           >
-            Network Stats
+            PIXELMINER NETWORK STATS
           </Text>
         </HStack>
 
         <Box>
           <HStack justify="space-between" mb={2}>
-            <Text color="gray.400">Next Halving</Text>
+            <Text color="gray.400" textAlign="left" flex="1">Next Halving</Text>
             <AnimatePresence mode="wait">
               <MotionText
                 key={blocksUntilNextHalving?.toString()}
@@ -120,6 +120,8 @@ const NetworkStats = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                textAlign="right"
+                flex="1"
                 sx={{
                   textShadow: `0 0 10px ${neon.green}88, 0 0 20px ${neon.green}44`
                 }}
@@ -134,7 +136,7 @@ const NetworkStats = () => {
 
         <Box>
           <HStack justify="space-between" mb={2}>
-            <Text color="gray.400">Total Network Hashrate</Text>
+            <Text color="gray.400" textAlign="left" flex="1">Total Network Hashrate</Text>
             <AnimatePresence mode="wait">
               <MotionText
                 key={totalHashrate?.toString()}
@@ -143,6 +145,8 @@ const NetworkStats = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                textAlign="right"
+                flex="1"
                 sx={{
                   textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
                 }}
@@ -155,7 +159,7 @@ const NetworkStats = () => {
 
         <Box>
           <HStack justify="space-between" mb={2}>
-            <Text color="gray.400">Total Burned</Text>
+            <Text color="gray.400" textAlign="left" flex="1">Total Burned</Text>
             <AnimatePresence mode="wait">
               <MotionText
                 key={totalBurned?.toString()}
@@ -164,11 +168,13 @@ const NetworkStats = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                textAlign="right"
+                flex="1"
                 sx={{
                   textShadow: `0 0 10px ${neon.purple}88, 0 0 20px ${neon.purple}44`
                 }}
               >
-                {typeof totalBurned === 'bigint' ? formatEther(totalBurned) : '0'} MAXX
+                {typeof totalBurned === 'bigint' ? formatEther(totalBurned) : '0'} PXL
               </MotionText>
             </AnimatePresence>
           </HStack>
@@ -176,14 +182,16 @@ const NetworkStats = () => {
 
         <Box>
           <HStack justify="space-between" mb={2}>
-            <Text color="gray.400">Block Reward</Text>
+            <Text color="gray.400" textAlign="left" flex="1">Block Reward</Text>
             <Text 
               color={neon.blue}
+              textAlign="right"
+              flex="1"
               sx={{
                 textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
               }}
             >
-              50 MAXX
+              50 PXL
             </Text>
           </HStack>
         </Box>

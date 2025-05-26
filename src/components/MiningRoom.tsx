@@ -101,7 +101,9 @@ export default function MiningRoom() {
 
   return (
     <VStack spacing={8} w="full">
-      <Heading>Mining Room</Heading>
+      <Text color="neon.blue" fontWeight="bold" mb={4} fontSize="md" letterSpacing={1} textShadow="0 0 8px #00E8FF">
+        PIXELMINER MINING ROOM
+      </Text>
       
       <Grid templateColumns="repeat(2, 1fr)" gap={6} w="full">
         <Box p={6} borderWidth={1} borderRadius="lg">

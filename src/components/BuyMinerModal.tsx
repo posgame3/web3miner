@@ -46,9 +46,10 @@ interface BuyMinerModalProps {
   onClose: () => void;
   selectedTile: TileCoords | null;
   onBuy: (minerIndex: number, tile: TileCoords) => void;
+  onSuccess?: () => void;
 }
 
-const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selectedTile, onBuy }) => {
+const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selectedTile, onBuy, onSuccess }) => {
   const [selectedType, setSelectedType] = useState(0);
   const toast = useToast();
   const { address } = useAccount();
@@ -167,11 +168,11 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
       return;
     }
     if (!hasEnoughBalance) {
-      toast({ title: 'Not enough MAXX', status: 'error' });
+      toast({ title: 'Not enough PXL', status: 'error' });
       return;
     }
     if (!hasEnoughAllowance) {
-      toast({ title: 'Approve MAXX first', status: 'warning' });
+      toast({ title: 'Approve PXL first', status: 'warning' });
       return;
     }
 
@@ -206,9 +207,11 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
   useEffect(() => {
     if (isBuyingSuccess) {
       onClose();
-      window.location.reload();
+      if (onSuccess) {
+        onSuccess();
+      }
     }
-  }, [isBuyingSuccess, onClose]);
+  }, [isBuyingSuccess, onClose, onSuccess]);
 
   const getMinerIcon = (index: number) => {
     switch (index) {
@@ -224,7 +227,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
   };
 
   const handleClose = () => {
-    window.location.reload();
+    onClose();
   };
 
   return (
@@ -294,7 +297,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                             <HStack spacing={4}>
                               <Text color="#fff" fontSize="xs">HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{hashrate} GH/s</span></Text>
                               <Text color="#fff" fontSize="xs">POWER: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{power} GW</span></Text>
-                              <Text color="#fff" fontSize="xs">PRICE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{cost} MAXX</span></Text>
+                              <Text color="#fff" fontSize="xs">PRICE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{cost} PXL</span></Text>
                             </HStack>
                           </VStack>
                         </HStack>
@@ -308,7 +311,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                 <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">TOTAL</Text>
                 <VStack align="start" spacing={1}>
                   <Text color="#fff" fontSize="sm">
-                    TOTAL COST: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalCost} MAXX</span>
+                    TOTAL COST: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalCost} PXL</span>
                   </Text>
                   <Text color="#fff" fontSize="sm">
                     TOTAL HASHRATE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{totalHashrate} GH/s</span>
@@ -324,12 +327,12 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                   <HStack justify="space-between">
                     <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">BALANCE:</Text>
                     <Text color={hasEnoughBalance ? '#00FF99' : '#FF00CC'} fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">
-                      {maxxBalance ? Number(maxxBalance.formatted).toFixed(2) : '0'} MAXX
+                      {maxxBalance ? Number(maxxBalance.formatted).toFixed(2) : '0'} PXL
                     </Text>
                   </HStack>
                   <HStack justify="space-between">
                     <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">COST:</Text>
-                    <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">{totalCost} MAXX</Text>
+                    <Text color="#00E8FF" fontSize="sm" fontWeight="bold" textShadow="0 0 8px #00E8FF">{totalCost} PXL</Text>
                   </HStack>
                 </VStack>
               </Box>
@@ -363,7 +366,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                       textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
                     }}
                   >
-                    APPROVE MAXX
+                    APPROVE PXL
                   </Button>
                 ) : (
                   <Button

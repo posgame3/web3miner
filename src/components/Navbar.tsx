@@ -66,7 +66,7 @@ const Navbar = () => {
         <Flex alignItems={'center'}>
           <ChakraLink 
             as={RouterLink} 
-            to="/" 
+            to="/room" 
             fontSize="xl" 
             fontWeight="bold"
             color={neon.blue}
@@ -78,7 +78,7 @@ const Navbar = () => {
               textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
             }}
           >
-            Ethermax
+            PIXELMINER
           </ChakraLink>
           <HStack ml={10} spacing={4}>
             <ChakraLink 

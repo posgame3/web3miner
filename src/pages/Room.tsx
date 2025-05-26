@@ -279,7 +279,7 @@ const Room = () => {
       });
       
       toast({ 
-        title: 'Zatwierdzono tokeny MAXX',
+        title: 'Zatwierdzono tokeny PXL',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -526,6 +526,21 @@ const Room = () => {
     }
   };
 
+  // Add refetch function for miners
+  const { refetch: refetchMiners } = useContractRead({
+    address: MINING_ADDRESS as `0x${string}`,
+    abi: MINING_ABI,
+    functionName: 'getPlayerMinersPaginated',
+    args: [address, 0, 100],
+    query: {
+      enabled: !!address
+    }
+  });
+
+  const handleBuyMinerSuccess = () => {
+    refetchMiners();
+  };
+
   // Loading spinner przy sprawdzaniu facility
   if (isFacilityLoading) {
     return (
@@ -687,7 +702,7 @@ const Room = () => {
               transform: 'scale(0.95)',
             }}
             as="a"
-            href="https://docs.ethermax.org/"
+            href="https://docs.pixelminer.org/"
             target="_blank"
             rel="noopener noreferrer"
             transition="all 0.2s"
@@ -897,7 +912,7 @@ const Room = () => {
             }}
           >
             <Text color="neon.blue" fontWeight="bold" mb={4} fontSize="md" letterSpacing={1} textShadow="0 0 8px #00E8FF">
-              ETHERMAX VIRTUAL MACHINE
+              PIXELMINER VIRTUAL MACHINE
             </Text>
             <Box flex="1" overflow="hidden" position="relative">
               <MiningGrid
@@ -942,6 +957,7 @@ const Room = () => {
         onClose={() => setBuyModalOpen(false)}
         selectedTile={selectedTile}
         onBuy={handleBuyMiner}
+        onSuccess={handleBuyMinerSuccess}
       />
       <UpgradeFacilityModal
         isOpen={isUpgradeModalOpen}

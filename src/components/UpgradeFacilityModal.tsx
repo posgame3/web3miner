@@ -263,15 +263,15 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
 
             <Box>
               <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">UPGRADE COST</Text>
-              <Text color="#fff" fontSize="sm">
-                TOTAL COST: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>1,440 MAXX</span>
+              <Text color="gray.400" fontSize="sm">
+                TOTAL COST: {formatEther(fixedUpgradeCost)} PXL
               </Text>
             </Box>
 
             <Box>
               <Text color="#fff" fontSize="sm" mb={2} textShadow="0 0 8px #00E8FF">YOUR BALANCE</Text>
               <Text color="#fff" fontSize="sm">
-                MAXX: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{maxxBalance ? Number(formatEther(maxxBalance.value)).toLocaleString() : '0'} MAXX</span>
+                PXL BALANCE: <span style={{ color: '#00E8FF', textShadow: '0 0 8px #00E8FF' }}>{maxxBalance ? Number(maxxBalance.formatted).toFixed(2) : '0'}</span>
               </Text>
             </Box>
           </VStack>
@@ -300,7 +300,7 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
                 sx={{ textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44' }}
                 isDisabled={!hasEnoughBalance}
               >
-                APPROVE MAXX
+                APPROVE PXL
               </Button>
             ) : (
               <Button
