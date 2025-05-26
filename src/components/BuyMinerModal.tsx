@@ -212,10 +212,13 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
 
   useEffect(() => {
     if (isBuyingSuccess) {
-      onClose();
-      if (onSuccess) {
-        onSuccess();
-      }
+      // Add a small delay to ensure the blockchain state is updated
+      setTimeout(() => {
+        if (onSuccess) {
+          onSuccess();
+        }
+        onClose(); // Close the modal after refreshing
+      }, 2000);
     }
   }, [isBuyingSuccess, onClose, onSuccess]);
 

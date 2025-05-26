@@ -538,7 +538,12 @@ const Room = () => {
   });
 
   const handleBuyMinerSuccess = () => {
+    // Refresh facility data
+    refetchFacility();
+    // Refresh miners data
     refetchMiners();
+    // Refresh occupied coords
+    fetchOccupiedCoords();
   };
 
   // Loading spinner przy sprawdzaniu facility

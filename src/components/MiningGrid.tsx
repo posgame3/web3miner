@@ -28,13 +28,14 @@ const MiningGrid: React.FC<MiningGridProps> = ({ selected, onSelect, minerTiles 
   const { address } = useAccount();
 
   // Get miner data for each tile
-  const { data: miners } = useContractRead({
+  const { data: miners, refetch: refetchMiners } = useContractRead({
     address: MINING_ADDRESS as `0x${string}`,
     abi: MINING_ABI,
     functionName: 'getPlayerMinersPaginated',
     args: [address, 0, 100],
     query: {
-      enabled: !!address
+      enabled: !!address,
+      refetchInterval: 2000, // Add automatic refresh every 2 seconds
     }
   });
 

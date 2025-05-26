@@ -51,19 +51,31 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
     green: '#00FF9D'
   };
 
-  // ETH balance
-  const { data: ethBalance } = useBalance({ address });
-  // PXL balance
-  const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
+  // ETH balance with auto-refresh
+  const { data: ethBalance } = useBalance({ 
+    address,
+    query: {
+      refetchInterval: 1000, // Refresh every second
+    }
+  });
+  
+  // PXL balance with auto-refresh
+  const { data: maxxBalance } = useBalance({ 
+    address, 
+    token: ETHERMAX_ADDRESS,
+    query: {
+      refetchInterval: 1000, // Refresh every second
+    }
+  });
 
-  const { data: facilityData } = useContractRead({
+  const { data: facilityData, refetch: refetchFacility } = useContractRead({
     address: MINING_ADDRESS as `0x${string}`,
     abi: MINING_ABI,
     functionName: 'ownerToFacility',
     args: [address],
     query: {
       enabled: !!address,
-      refetchInterval: 2000,
+      refetchInterval: 1000, // Refresh every second
     }
   });
 
