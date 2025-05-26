@@ -17,7 +17,7 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import { TileCoords } from './MiningGrid';
-import { useAccount, useBalance, useContractRead, useContractWrite, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useBalance, useContractRead, useContractWrite, useWaitForTransactionReceipt, WriteContractReturnType } from 'wagmi';
 import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
 import { parseEther, formatEther } from 'viem';
 import { FaLaptop, FaServer, FaDesktop, FaMicrochip } from 'react-icons/fa';
@@ -187,9 +187,9 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
         chain: undefined,
         account: address
       };
-      const hash = await writeContract(tx);
-      if (hash) {
-        setBuyTxHash(hash as `0x${string}`);
+      const result = await writeContract(tx);
+      if (result) {
+        setBuyTxHash(result as `0x${string}`);
         toast({
           title: 'Transaction sent!',
           description: 'Waiting for confirmation...',
@@ -221,6 +221,25 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
       }, 2000);
     }
   }, [isBuyingSuccess, onClose, onSuccess]);
+
+  // Add effect to close modal when transaction is successful
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+    }
+  }, [isSuccess, onClose]);
+
+  // Keep only the loading state effect
+  useEffect(() => {
+    if (isConfirming) {
+      toast({
+        title: 'Transaction confirming...',
+        status: 'info',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [isConfirming, toast]);
 
   const getMinerIcon = (index: number) => {
     switch (index) {
