@@ -10,6 +10,7 @@ import {
   useColorModeValue,
   Flex,
   Link,
+  Image,
 } from '@chakra-ui/react';
 import { FaDiscord, FaTwitter, FaGithub } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
@@ -49,16 +50,82 @@ const Home = () => {
   };
 
   return (
-    <Box bg="gray.900" minH="100vh" py={20}>
-      <Container maxW="container.xl">
+    <Box 
+      minH="100vh" 
+      py={20}
+      position="relative"
+      overflow="hidden"
+      sx={{
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, #0A0B0E 0%, #1A1B1F 100%)',
+          zIndex: 0
+        },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `radial-gradient(circle at 50% 50%, ${neon.blue}11 0%, transparent 50%)`,
+          zIndex: 1,
+          pointerEvents: 'none'
+        }
+      }}
+    >
+      <Container maxW="container.xl" position="relative" zIndex={2}>
         {/* Hero Section */}
         <VStack spacing={8} mb={20} textAlign="center">
+          <Box
+            position="relative"
+            w="300px"
+            h="300px"
+            mb={8}
+            _hover={{
+              transform: 'scale(1.05)',
+              filter: 'brightness(1.2)',
+            }}
+            transition="all 0.3s ease"
+            sx={{
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                top: '-10px',
+                left: '-10px',
+                right: '-10px',
+                bottom: '-10px',
+                borderRadius: 'full',
+                background: `linear-gradient(45deg, ${neon.blue}44, ${neon.purple}44)`,
+                filter: 'blur(20px)',
+                zIndex: -1,
+                opacity: 0.5,
+              }
+            }}
+          >
+            <Image
+              src="/pixelminer.png"
+              alt="PixelMiner Logo"
+              w="100%"
+              h="100%"
+              objectFit="contain"
+              filter="drop-shadow(0 0 20px rgba(0, 232, 255, 0.5))"
+            />
+          </Box>
           <Heading
             size="2xl"
             bgGradient={`linear(to-r, ${neon.blue}, ${neon.purple})`}
             bgClip="text"
             fontWeight="extrabold"
             letterSpacing="tight"
+            sx={{
+              textShadow: `0 0 20px ${neon.blue}44`
+            }}
           >
             PIXELMINER
           </Heading>
@@ -127,6 +194,7 @@ const Home = () => {
               borderRadius="lg"
               border="2px solid"
               borderColor={neon.blue}
+              boxShadow={`0 0 16px ${neon.blue}22`}
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>1. Connect Your Wallet</Heading>
@@ -139,6 +207,7 @@ const Home = () => {
               borderRadius="lg"
               border="2px solid"
               borderColor={neon.blue}
+              boxShadow={`0 0 16px ${neon.blue}22`}
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>2. Buy Your First Miner</Heading>
@@ -151,6 +220,7 @@ const Home = () => {
               borderRadius="lg"
               border="2px solid"
               borderColor={neon.blue}
+              boxShadow={`0 0 16px ${neon.blue}22`}
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>3. Start Mining</Heading>
@@ -163,6 +233,7 @@ const Home = () => {
               borderRadius="lg"
               border="2px solid"
               borderColor={neon.blue}
+              boxShadow={`0 0 16px ${neon.blue}22`}
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>4. Upgrade & Expand</Heading>
