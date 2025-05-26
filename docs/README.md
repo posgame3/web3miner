@@ -111,29 +111,6 @@ PIXELMINER is a next-generation decentralized mining game built on Base Layer 2,
 - Mining Rig: [Contract Address]
 - Staking Pool: [Contract Address]
 
-## Development
-
-### Local Setup
-```bash
-# Clone the repository
-git clone https://github.com/your-username/pixelminer.git
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Testing
-```bash
-# Run tests
-npm test
-
-# Run coverage
-npm run coverage
-```
-
 ## Contributing
 
 We welcome contributions from the community. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.

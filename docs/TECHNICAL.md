@@ -150,8 +150,8 @@ describe('Contract Integration', () => {
 
 ### Smart Contract Deployment
 ```bash
-# Deploy contracts
-npx hardhat run scripts/deploy.js --network base
+# Deploy contracts to Sepolia
+npx hardhat run scripts/deploy.js --network sepolia
 ```
 
 ### Frontend Deployment
