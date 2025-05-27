@@ -76,12 +76,20 @@ And so on until reaching the maximum supply of 420,000,000 PXL
 - Miners require power to operate
 - Exceeding power capacity reduces mining efficiency
 - Upgrade facilities to increase power capacity
+- **Important**: There is a 24-hour cooldown period between facility upgrades to the next level
 
 ### Hashrate Optimization
 - Higher hashrate = more mining rewards
 - Balance between hashrate and power consumption
 - Strategic placement of miners in facilities
 - Upgrade paths for existing miners
+
+### Facility Upgrade System
+- Each facility level increases power capacity and efficiency
+- 24-hour cooldown period between upgrades
+- Plan your upgrades strategically
+- Consider power requirements of future miners
+- Upgrade timing affects overall mining efficiency
 
 ## Token Utility
 
