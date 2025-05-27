@@ -20,6 +20,7 @@
 * [Staking](user-guide/staking.md)
 
 ## Tokenomics
+* [Tokenomics Overview](tokenomics/tokenomics.md)
 * [PXL Token](tokenomics/pxl-token.md)
 * [Rewards Distribution](tokenomics/rewards-distribution.md)
 * [Staking Rewards](tokenomics/staking-rewards.md)
