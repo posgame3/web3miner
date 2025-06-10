@@ -1,0 +1,39 @@
+name: GitBook Sync
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/gitbook/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install GitBook CLI
+        run: npm install -g gitbook-cli
+        
+      - name: Install GitBook Dependencies
+        run: |
+          cd docs/gitbook
+          gitbook install
+          
+      - name: Build GitBook
+        run: |
+          cd docs/gitbook
+          gitbook build
+          
+      - name: Deploy to GitBook
+        env:
+          GITBOOK_TOKEN: ${{ secrets.GITBOOK_TOKEN }}
+        run: |
+          cd docs/gitbook
+          gitbook deploy 

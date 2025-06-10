@@ -1,6 +1,6 @@
 {
-  "title": "PIXELMINER Documentation",
-  "description": "Complete guide to PIXELMINER - Play, Earn, Upgrade!",
+  "title": "PixelMiner Documentation",
+  "description": "Official documentation for PixelMiner game",
   "author": "PIXELMINER Team",
   "language": "en",
   "structure": {
@@ -10,17 +10,10 @@
   "plugins": [
     "theme-default",
     "highlight",
+    "search",
     "sharing",
     "fontsettings",
-    "back-to-top-button",
-    "image-captions",
-    "anchors",
-    "code",
-    "copy-code-button",
-    "search",
-    "splitter",
-    "toc",
-    "expandable-chapters"
+    "livereload"
   ],
   "pluginsConfig": {
     "image-captions": {
