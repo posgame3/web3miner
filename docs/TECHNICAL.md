@@ -63,11 +63,15 @@ contract MiningRig is ReentrancyGuard, Ownable {
 
     mapping(uint256 => mapping(uint256 => Miner)) public miners;
     
-    function buyFacility() external payable {
+    function buyFacility(address referrer) external payable {
         require(msg.value >= 0.001 ether, "Insufficient ETH for facility");
-        // Implementation for facility purchase
-        // After purchase, user gets a free starter miner
+        require(referrer != address(0) && referrer != msg.sender, "Invalid referrer");
+        
+        // Process facility purchase
         _placeStarterMiner(msg.sender);
+        
+        // Record referral
+        referrals[msg.sender] = referrer;
     }
 
     function _placeStarterMiner(address owner) internal {
@@ -86,6 +90,10 @@ contract MiningRig is ReentrancyGuard, Ownable {
 
     function claimRewards() external nonReentrant {
         // Implementation
+    }
+
+    function calculateReferralReward(uint256 miningReward) internal view returns (uint256) {
+        return (miningReward * REFERRAL_PERCENTAGE) / 100;
     }
 }
 ```
@@ -394,6 +402,157 @@ npm run test
 4. Deployment
 5. Documentation update
 6. Announcement
+
+## Tokenomics
+
+### Token Parameters
+- **Total Supply**: 420,000,000 PXL
+- **Initial Supply**: 4,200,000 PXL (1% of total supply)
+- **Maximum Supply**: 420,000,000 PXL (defined in contract as `MAX_SUPPLY`)
+
+### Token Generation Mechanics
+- Each miner generates 120 H/s (defined in contract)
+- Block reward: 50 PXL per block
+- Block time: ~12 seconds (Base network)
+- Blocks per day: ~7,200
+- Daily network emission: ~360,000 PXL
+- Monthly network emission: ~10,800,000 PXL
+- Yearly network emission: ~131,400,000 PXL
+
+### Deflationary Mechanisms
+- Miner upgrades: 75% of upgrade value burned
+- New miner purchases: 75% of purchase value burned
+- Transfers: 0.1% of transfer value burned
+- Special operations: 1-5% of operation value burned
+
+### Limits and Mechanisms
+- Maximum miners per user: 10
+- Maximum total miners in network: 10,000
+- Halving every 1,296,000 blocks (approximately 180 days on Base)
+- Initial block reward: 50 PXL
+- After each halving: reward / 2
+
+### Token Distribution
+- 40% - Mining Rewards
+- 20% - Team & Development
+- 15% - Marketing & Partnerships
+- 15% - Liquidity Pool
+- 10% - Community & Ecosystem
+
+### Costs and Fees
+- Initial miner cost: 0.001 ETH
+- Miner upgrade cost: 5% of upgrade value
+- New miner purchase cost: 2% of purchase value
+- Transfer cost: 0.1% of transfer value
+
+### Important Notes
+- Token economics balanced by deflationary mechanisms
+- 180-day halving ensures controlled emission
+- Maximum supply capped at 420,000,000 PXL
+- Token burning reduces supply during operations
+- Network emission controlled by block rewards and halving
+- Deflationary mechanisms help maintain token value
+
+## Referral System Architecture
+
+### Smart Contract Integration
+```solidity
+// MiningRig.sol referral functionality
+function buyFacility(address referrer) external payable {
+    require(msg.value >= 0.001 ether, "Insufficient ETH for facility");
+    require(referrer != address(0) && referrer != msg.sender, "Invalid referrer");
+    
+    // Process facility purchase
+    _placeStarterMiner(msg.sender);
+    
+    // Record referral
+    referrals[msg.sender] = referrer;
+}
+
+function calculateReferralReward(uint256 miningReward) internal view returns (uint256) {
+    return (miningReward * REFERRAL_PERCENTAGE) / 100;
+}
+```
+
+### Frontend Implementation
+
+#### Referral Link Generation
+```typescript
+const generateReferralLink = (address: string) => {
+    return `${window.location.origin}?ref=${address}`;
+};
+```
+
+#### Referral Tracking
+- URL parameter handling in App.tsx
+- LocalStorage persistence
+- Automatic input population
+- Validation and error handling
+
+### Component Structure
+```
+src/
+├── components/
+│   ├── ReferralSystem.tsx    # Main referral component
+│   └── ...
+├── pages/
+│   ├── Referral.tsx         # Referral page
+│   └── ...
+```
+
+### Key Features
+1. **Referral Link Generation**
+   - Unique links per user
+   - Easy sharing functionality
+   - QR code generation
+
+2. **Reward Distribution**
+   - 5% of referred user's mining rewards
+   - Automatic distribution
+   - Real-time tracking
+
+3. **Validation System**
+   - Address format validation
+   - Self-referral prevention
+   - Duplicate referral prevention
+
+4. **UI Components**
+   - Referral link display
+   - Reward statistics
+   - Referral history
+   - Copy to clipboard functionality
+
+### State Management
+```typescript
+interface ReferralState {
+    referrerAddress: string;
+    referralCount: number;
+    totalEarnings: number;
+    referralHistory: ReferralEntry[];
+}
+
+interface ReferralEntry {
+    address: string;
+    timestamp: number;
+    earnings: number;
+}
+```
+
+### Security Considerations
+1. **Input Validation**
+   - Address format checking
+   - Duplicate prevention
+   - Self-referral prevention
+
+2. **Transaction Security**
+   - Gas optimization
+   - Error handling
+   - Transaction confirmation
+
+3. **Data Persistence**
+   - LocalStorage encryption
+   - Secure state management
+   - Cache invalidation
 
 ---
 

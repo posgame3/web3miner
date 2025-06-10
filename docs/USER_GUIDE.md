@@ -144,6 +144,75 @@ PIXELMINER is your gateway to the world of decentralized mining. This guide will
 3. Wait for 24h cooldown
 4. Repeat process
 
+## Referral Program 🤝
+
+### How It Works
+1. **Get Your Referral Link**
+   - Go to the Referral page
+   - Copy your unique referral link
+   - Share with friends and community
+
+2. **Earn Rewards**
+   - Get 5% of your referrals' mining rewards
+   - Rewards are distributed automatically
+   - No limit on number of referrals
+
+3. **Track Your Earnings**
+   - View total earnings from referrals
+   - See individual referral performance
+   - Monitor real-time reward distribution
+
+### Using Referral Links
+1. **Sharing Your Link**
+   - Copy link from Referral page
+   - Share on social media
+   - Include in your content
+   - Generate QR code for easy sharing
+
+2. **When Someone Uses Your Link**
+   - They'll be directed to the site
+   - Their referral will be automatically recorded
+   - You'll start earning rewards immediately
+   - Track their mining activity
+
+### Maximizing Referral Earnings
+1. **Best Practices**
+   - Share with active miners
+   - Create educational content
+   - Build a mining community
+   - Regular engagement with referrals
+
+2. **Tracking Tools**
+   - Referral dashboard
+   - Earnings statistics
+   - Performance metrics
+   - Historical data
+
+### Referral Rewards
+- 5% of referred user's mining rewards
+- Automatic distribution
+- No minimum payout
+- Instant rewards
+
+### Tips for Success
+1. **Community Building**
+   - Create mining guides
+   - Share strategies
+   - Help new miners
+   - Regular updates
+
+2. **Content Creation**
+   - Tutorial videos
+   - Written guides
+   - Social media posts
+   - Community engagement
+
+3. **Support**
+   - Help with setup
+   - Answer questions
+   - Share best practices
+   - Regular check-ins
+
 ## Tips & Tricks 💡
 
 ### Maximizing Profits
@@ -194,6 +263,57 @@ PIXELMINER is your gateway to the world of decentralized mining. This guide will
 - Strategy guides
 - Market analysis
 - Community events
+
+## Tokenomics Explained
+
+### PXL Token Overview
+- Total Supply: 420,000,000 PXL
+- Initial Supply: 4,200,000 PXL
+- Maximum Supply: 420,000,000 PXL
+
+### How Mining Rewards Work
+- Each miner generates 120 H/s
+- Block reward: 50 PXL per block
+- Block time: ~12 seconds (Base network)
+- Blocks per day: ~7,200
+- Daily network emission: ~360,000 PXL
+- Monthly network emission: ~10,800,000 PXL
+- Yearly network emission: ~131,400,000 PXL
+
+### Token Distribution
+- 40% - Mining Rewards (for active miners)
+- 20% - Team & Development
+- 15% - Marketing & Partnerships
+- 15% - Liquidity Pool
+- 10% - Community & Ecosystem
+
+### Deflationary Features
+- 75% of upgrade costs are burned
+- 75% of new miner purchase costs are burned
+- 0.1% of transfer amounts are burned
+- 1-5% of special operations are burned
+
+### Important Limits
+- Maximum 10 miners per user
+- Maximum 10,000 miners in the network
+- Halving occurs every 180 days
+- Initial block reward: 50 PXL
+- After each halving: reward / 2
+
+### Costs and Fees
+- Initial miner: 0.001 ETH
+- Miner upgrades: 5% of upgrade value
+- New miners: 2% of purchase value
+- Transfers: 0.1% of transfer value
+
+### Tips for Maximizing Rewards
+1. Start with the free starter miner
+2. Upgrade your facility to increase capacity
+3. Buy additional miners when you have enough PXL
+4. Claim rewards regularly
+5. Consider the power consumption of your miners
+6. Plan your upgrades strategically
+7. Monitor halving events to optimize mining strategy
 
 ---
 
