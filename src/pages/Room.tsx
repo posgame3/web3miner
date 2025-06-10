@@ -13,6 +13,7 @@ import {
   StatHelpText,
   Divider,
   Spinner,
+  Input,
 } from '@chakra-ui/react';
 import { useAccount, useContractRead, useContractWrite, useChainId } from 'wagmi';
 import { useWaitForTransactionReceipt } from 'wagmi';
@@ -138,18 +139,46 @@ const Room = () => {
     hash: facilityTxHash,
   });
 
+  const [referrerInput, setReferrerInput] = useState('');
+  const [isReferrerValid, setIsReferrerValid] = useState(true);
+
+  useEffect(() => {
+    const storedRef = localStorage.getItem('referrer');
+    if (storedRef) {
+      setReferrerInput(storedRef);
+      validateReferrer(storedRef);
+    }
+  }, []);
+
+  const validateReferrer = (address: string) => {
+    const isValid = /^0x[a-fA-F0-9]{40}$/.test(address);
+    setIsReferrerValid(isValid);
+    return isValid;
+  };
+
   const handleBuyFacility = async () => {
     try {
       if (!initialFacilityPrice) {
         toast({ title: 'Cannot fetch facility price', status: 'error', duration: 4000, isClosable: true });
         return;
       }
-      const referrer = localStorage.getItem('referrer') || '0x0000000000000000000000000000000000000000';
+
+      let referrerAddress = '0x0000000000000000000000000000000000000000';
+      
+      if (referrerInput && validateReferrer(referrerInput)) {
+        referrerAddress = referrerInput;
+      } else {
+        const storedReferrer = localStorage.getItem('referrer');
+        if (storedReferrer) {
+          referrerAddress = storedReferrer;
+        }
+      }
+
       const hash = await writeContractAsync({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
         functionName: 'purchaseInitialFacility',
-        args: [referrer],
+        args: [referrerAddress],
         value: initialFacilityPrice as bigint,
         chain: chainId,
         account: address,
@@ -670,7 +699,50 @@ const Room = () => {
         >
           YOU DON&apos;T HAVE A SPACE TO MINE!
         </Text>
-        <HStack spacing={4} mt={4}>
+        <VStack spacing={4} w="full" maxW="400px">
+          <Box
+            bg="#0F1117"
+            p={4}
+            borderRadius="md"
+            border="1px solid"
+            borderColor="neon.blue"
+            w="full"
+          >
+            <Text color="neon.blue" fontSize="xs" mb={2} textShadow="0 0 8px #00E8FF">
+              FREE MINER INCLUDED!
+            </Text>
+            <Text color="white" fontSize="xs" opacity={0.8}>
+              After purchasing a facility, you will receive a free starter miner that will automatically mine tokens for you. No additional costs!
+            </Text>
+          </Box>
+          <Input
+            placeholder="Enter referrer address (optional)"
+            value={referrerInput}
+            onChange={(e) => {
+              setReferrerInput(e.target.value);
+              if (e.target.value) {
+                validateReferrer(e.target.value);
+              } else {
+                setIsReferrerValid(true);
+              }
+            }}
+            bg="#0F1117"
+            borderColor={isReferrerValid ? "neon.blue" : "red.500"}
+            color="white"
+            _hover={{ borderColor: "neon.pink" }}
+            _focus={{ borderColor: "neon.pink", boxShadow: "0 0 0 1px #FF00CC" }}
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="xs"
+            isInvalid={!isReferrerValid}
+            _placeholder={{ color: "gray.500" }}
+          />
+          {!isReferrerValid && (
+            <Text color="red.500" fontSize="xs" fontFamily="'Press Start 2P', monospace">
+              Invalid Ethereum address
+            </Text>
+          )}
+        </VStack>
+        <HStack spacing={4} mt={6}>
           <Button
             colorScheme="blue"
             bg="neon.blue"
@@ -769,124 +841,125 @@ const Room = () => {
         </Box>
       );
     }
-    // Renderuj grid do wyboru pozycji
     return (
-      <Box bg="#181A20" minH="60vh" display="flex" flexDir="column" alignItems="center" justifyContent="center" borderRadius="md" border="2px solid #00E8FF" boxShadow="0 0 8px #00E8FF55" mt={10}>
-        <Text color="#fff" fontFamily="'Press Start 2P', monospace" fontSize="lg" mb={6} textAlign="center">
-          CLAIM YOUR FREE MINER!
-        </Text>
-        <Box
-          bg="neon.panel"
-          borderRadius="lg"
-          border="2.5px solid"
-          borderColor="neon.blue"
-          boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
-          p={6}
-          fontFamily="'Press Start 2P', monospace"
-          position="relative"
-          overflow="hidden"
-          display="flex"
-          flexDirection="column"
-          height="100%"
-          width={["100%", "100%", "600px"]}
-          maxW="100%"
-          minH="520px"
-          maxH="700px"
-          _before={{
-            content: '""',
-            position: 'absolute',
-            inset: 0,
-            borderRadius: "lg",
-            boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
-            pointerEvents: "none",
-            opacity: 0.5,
-            zIndex: 0,
-          }}
-        >
-          <Box flex="1" overflow="hidden" position="relative" display="flex" alignItems="center" justifyContent="center" minH="380px" minW="380px" maxW="100%">
-            <MiningGrid
-              selected={starterMinerTile}
-              onSelect={setStarterMinerTile}
-              minerTiles={[]}
-              starterMinerTile={starterMinerTile}
-              gridSizeX={gridSizeX}
-              gridSizeY={gridSizeY}
-              tileSize={96}
-            />
-          </Box>
-          <Box display="flex" flexDirection="column" alignItems="center" gap={4} mt={6}>
-            <Button
-              colorScheme="blue"
-              bg="neon.blue"
-              color="white"
-              _hover={{
-                bg: 'neon.pink',
-                boxShadow: '0 0 16px #FF00CC',
-              }}
-              onClick={handleClaimStarterMiner}
-              isLoading={isPending}
-              isDisabled={!starterMinerTile}
-              fontFamily="'Press Start 2P', monospace"
-              fontSize="xs"
-              px={6}
-              py={4}
-              borderRadius="md"
-              border="2px solid"
+      <Box bg="#181A20" minH="100vh" py={6} px={[2, 10]} fontFamily="'Press Start 2P', monospace" position="relative">
+        <Grid templateColumns={["1fr", null, "360px 1fr"]} gap={8} maxW="1200px" mx="auto">
+          {/* Lewa kolumna: statystyki starter minera */}
+          <VStack spacing={6} align="stretch">
+            <Box
+              bg="neon.panel"
+              borderRadius="lg"
+              border="2.5px solid"
               borderColor="neon.blue"
-              _active={{
-                transform: 'scale(0.95)',
-              }}
-              transition="all 0.2s"
-              sx={{
-                textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+              boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
+              p={6}
+              fontFamily="'Press Start 2P', monospace"
+              position="relative"
+              _before={{
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: "lg",
+                boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
+                pointerEvents: "none",
+                opacity: 0.5,
+                zIndex: 0,
               }}
             >
-              CLAIM FREE MINER
-            </Button>
-          </Box>
-        </Box>
-        {/* Przeniesione info o darmowym minerze poniżej gridu */}
-        {starterMinerData && Array.isArray(starterMinerData) && (
-          <Box
-            mt={6}
-            p={4}
-            borderRadius="md"
-            bg="gray.700"
-            borderWidth="1px"
-            borderColor="#00E8FF44"
-            position="relative"
-            minW={["90%", "420px"]}
-            maxW="520px"
-            _before={{
-              content: '""',
-              position: 'absolute',
-              inset: 0,
-              borderRadius: 'md',
-              boxShadow: '0 0 16px #00E8FF22',
-              pointerEvents: 'none',
-              opacity: 0.5,
-              zIndex: 0,
-            }}
-          >
-            <VStack spacing={2} align="start">
-              <Text color="#00E8FF" fontSize="sm" fontWeight="bold" sx={{ textShadow: '0 0 8px #00E8FF44' }}>
-                FREE STARTER MINER
+              <Text color="neon.blue" fontWeight="bold" mb={4} fontSize="md" letterSpacing={1} textShadow="0 0 8px #00E8FF">
+                STARTER MINER STATS
               </Text>
-              <HStack>
-                <Text color="gray.400" fontSize="xs">HASHRATE:</Text>
-                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[4]?.toString()} GH/s</Text>
-              </HStack>
-              <HStack>
-                <Text color="gray.400" fontSize="xs">POWER:</Text>
-                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[5]?.toString()} GW</Text>
-              </HStack>
-              <HStack>
-                <Text color="gray.400" fontSize="xs">IN PRODUCTION:</Text>
-                <Text color="#00E8FF" fontSize="xs" sx={{ textShadow: '0 0 8px #00E8FF44' }}>{starterMinerData[7] ? 'YES' : 'NO'}</Text>
-              </HStack>
-            </VStack>
-          </Box>
-        )}
+              {starterMinerData && Array.isArray(starterMinerData) && (
+                <VStack spacing={4} align="stretch">
+                  <HStack justify="space-between">
+                    <Text color="gray.400" fontSize="xs">HASHRATE:</Text>
+                    <Text color="neon.blue" fontSize="xs" textShadow="0 0 8px #00E8FF">{starterMinerData[4]?.toString()} GH/s</Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="gray.400" fontSize="xs">POWER:</Text>
+                    <Text color="neon.blue" fontSize="xs" textShadow="0 0 8px #00E8FF">{starterMinerData[5]?.toString()} GW</Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="gray.400" fontSize="xs">IN PRODUCTION:</Text>
+                    <Text color="neon.blue" fontSize="xs" textShadow="0 0 8px #00E8FF">{starterMinerData[7] ? 'YES' : 'NO'}</Text>
+                  </HStack>
+                </VStack>
+              )}
+            </Box>
+          </VStack>
+
+          {/* Prawa kolumna: grid i przycisk */}
+          <VStack spacing={6} align="stretch">
+            <Box
+              bg="neon.panel"
+              borderRadius="lg"
+              border="2.5px solid"
+              borderColor="neon.blue"
+              boxShadow="0 0 16px #00E8FF, 0 0 32px #FF00CC55"
+              p={6}
+              fontFamily="'Press Start 2P', monospace"
+              position="relative"
+              overflow="hidden"
+              display="flex"
+              flexDirection="column"
+              height="100%"
+              _before={{
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: "lg",
+                boxShadow: "0 0 32px 4px #00E8FF, 0 0 64px 8px #FF00CC55",
+                pointerEvents: "none",
+                opacity: 0.5,
+                zIndex: 0,
+              }}
+            >
+              <Text color="neon.blue" fontWeight="bold" mb={4} fontSize="md" letterSpacing={1} textShadow="0 0 8px #00E8FF">
+                CLAIM YOUR FREE MINER
+              </Text>
+              <Box flex="1" overflow="hidden" position="relative" display="flex" alignItems="center" justifyContent="center" minH="380px">
+                <MiningGrid
+                  selected={starterMinerTile}
+                  onSelect={setStarterMinerTile}
+                  minerTiles={[]}
+                  starterMinerTile={starterMinerTile}
+                  gridSizeX={gridSizeX}
+                  gridSizeY={gridSizeY}
+                />
+              </Box>
+              <Box display="flex" flexDirection="column" alignItems="center" gap={4} mt={6}>
+                <Button
+                  colorScheme="blue"
+                  bg="neon.blue"
+                  color="white"
+                  _hover={{
+                    bg: 'neon.pink',
+                    boxShadow: '0 0 16px #FF00CC',
+                  }}
+                  onClick={handleClaimStarterMiner}
+                  isLoading={isPending}
+                  isDisabled={!starterMinerTile}
+                  fontFamily="'Press Start 2P', monospace"
+                  fontSize="xs"
+                  px={6}
+                  py={4}
+                  borderRadius="md"
+                  border="2px solid"
+                  borderColor="neon.blue"
+                  _active={{
+                    transform: 'scale(0.95)',
+                  }}
+                  transition="all 0.2s"
+                  sx={{
+                    textShadow: '0 0 10px #00E8FF88, 0 0 20px #00E8FF44'
+                  }}
+                >
+                  CLAIM FREE MINER
+                </Button>
+              </Box>
+            </Box>
+          </VStack>
+        </Grid>
       </Box>
     );
   }
