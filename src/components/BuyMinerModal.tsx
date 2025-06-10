@@ -210,6 +210,12 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     }
   };
 
+  const handleClose = () => {
+    setSelectedType(0);
+    setBuyTxHash(undefined);
+    onClose();
+  };
+
   useEffect(() => {
     if (isBuyingSuccess) {
       // Add a small delay to ensure the blockchain state is updated
@@ -217,17 +223,28 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
         if (onSuccess) {
           onSuccess();
         }
-        onClose(); // Close the modal after refreshing
+        handleClose(); // Use handleClose instead of onClose
       }, 2000);
     }
-  }, [isBuyingSuccess, onClose, onSuccess]);
+  }, [isBuyingSuccess, onSuccess]);
 
   // Add effect to close modal when transaction is successful
   useEffect(() => {
     if (isSuccess) {
-      onClose();
+      handleClose(); // Use handleClose instead of onClose
     }
-  }, [isSuccess, onClose]);
+  }, [isSuccess]);
+
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedType(0);
+      setBuyTxHash(undefined);
+    }
+    if (isOpen && refetchAllowance) {
+      refetchAllowance();
+    }
+  }, [isOpen, refetchAllowance]);
 
   // Keep only the loading state effect
   useEffect(() => {
@@ -252,10 +269,6 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
       default:
         return <span role="img" aria-label="miner" style={{ fontSize: 32, filter: 'drop-shadow(0 0 6px #00E8FF)' }}>💻</span>;
     }
-  };
-
-  const handleClose = () => {
-    onClose();
   };
 
   return (
@@ -315,6 +328,17 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                           boxShadow: '0 0 8px #00E8FF',
                         }}
                         transition="all 0.2s"
+                        position="relative"
+                        _after={{
+                          content: '""',
+                          position: 'absolute',
+                          inset: 0,
+                          borderRadius: "md",
+                          boxShadow: selectedType === id ? "0 0 16px #00E8FF, 0 0 32px #00E8FF55" : "none",
+                          pointerEvents: "none",
+                          opacity: 1,
+                          zIndex: 0,
+                        }}
                       >
                         <HStack spacing={4} align="center">
                           <Box>

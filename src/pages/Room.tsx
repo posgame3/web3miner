@@ -336,6 +336,10 @@ const Room = () => {
 
   // Kliknięcie kafelka
   const handleSelectTile = (coords: TileCoords) => {
+    // Reset previous selection
+    setSelectedTile(null);
+    
+    // Set new selection
     setSelectedTile(coords);
     const key = `${coords.x},${coords.y}`;
     const isOccupied = occupiedCoords[key];
@@ -538,12 +542,18 @@ const Room = () => {
   });
 
   const handleBuyMinerSuccess = () => {
-    // Refresh facility data
+    // Reset states
+    setSelectedTile(null);
+    setBuyModalOpen(false);
+    
+    // Refresh data
     refetchFacility();
-    // Refresh miners data
     refetchMiners();
-    // Refresh occupied coords
-    fetchOccupiedCoords();
+    
+    // Refresh occupied coords with a small delay to ensure blockchain state is updated
+    setTimeout(() => {
+      fetchOccupiedCoords();
+    }, 1000);
   };
 
   // Loading spinner przy sprawdzaniu facility
