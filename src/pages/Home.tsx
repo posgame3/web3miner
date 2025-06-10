@@ -75,10 +75,20 @@ const Home = () => {
           bottom: 0,
           background: `radial-gradient(circle at 50% 50%, ${neon.blue}11 0%, transparent 50%)`,
           zIndex: 1,
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          animation: 'pulse 4s infinite ease-in-out'
         }
       }}
     >
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+          }
+        `}
+      </style>
       <Container maxW="container.xl" position="relative" zIndex={2}>
         {/* Hero Section */}
         <VStack spacing={8} mb={20} textAlign="center">
@@ -105,6 +115,7 @@ const Home = () => {
                 filter: 'blur(20px)',
                 zIndex: -1,
                 opacity: 0.5,
+                animation: 'pulse 4s infinite ease-in-out'
               }
             }}
           >
@@ -142,6 +153,9 @@ const Home = () => {
               _hover={{
                 bg: neon.pink,
                 boxShadow: `0 0 16px ${neon.pink}88`
+              }}
+              sx={{
+                animation: 'glow 2s infinite alternate'
               }}
             >
               Start Mining
@@ -195,6 +209,11 @@ const Home = () => {
               border="2px solid"
               borderColor={neon.blue}
               boxShadow={`0 0 16px ${neon.blue}22`}
+              _hover={{
+                boxShadow: `0 0 20px ${neon.blue}88`,
+                transform: 'translateY(-5px)',
+              }}
+              transition="all 0.3s ease"
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>1. Connect Your Wallet</Heading>
@@ -208,6 +227,11 @@ const Home = () => {
               border="2px solid"
               borderColor={neon.blue}
               boxShadow={`0 0 16px ${neon.blue}22`}
+              _hover={{
+                boxShadow: `0 0 20px ${neon.blue}88`,
+                transform: 'translateY(-5px)',
+              }}
+              transition="all 0.3s ease"
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>2. Buy Your First Miner</Heading>
@@ -221,6 +245,11 @@ const Home = () => {
               border="2px solid"
               borderColor={neon.blue}
               boxShadow={`0 0 16px ${neon.blue}22`}
+              _hover={{
+                boxShadow: `0 0 20px ${neon.blue}88`,
+                transform: 'translateY(-5px)',
+              }}
+              transition="all 0.3s ease"
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>3. Start Mining</Heading>
@@ -234,6 +263,11 @@ const Home = () => {
               border="2px solid"
               borderColor={neon.blue}
               boxShadow={`0 0 16px ${neon.blue}22`}
+              _hover={{
+                boxShadow: `0 0 20px ${neon.blue}88`,
+                transform: 'translateY(-5px)',
+              }}
+              transition="all 0.3s ease"
             >
               <VStack align="start" spacing={4}>
                 <Heading size="md" color={neon.blue}>4. Upgrade & Expand</Heading>
@@ -243,30 +277,51 @@ const Home = () => {
           </SimpleGrid>
         </VStack>
 
+        {/* Free Miner Info Box */}
+        <Box
+          p={6}
+          bg={neon.panel}
+          borderRadius="lg"
+          border="2px solid"
+          borderColor={neon.blue}
+          boxShadow={`0 0 16px ${neon.blue}22`}
+          mb={20}
+          _hover={{
+            boxShadow: `0 0 20px ${neon.blue}88`,
+            transform: 'translateY(-5px)',
+          }}
+          transition="all 0.3s ease"
+        >
+          <VStack align="start" spacing={4}>
+            <Heading size="md" color={neon.blue}>FREE MINER INCLUDED!</Heading>
+            <Text color="gray.300">After purchasing a facility, you'll receive a free starter miner that will automatically mine tokens for you, with no additional costs.</Text>
+          </VStack>
+        </Box>
+
         {/* Community Section */}
         <VStack spacing={8}>
           <Heading color={neon.blue}>Join Our Community</Heading>
           <Flex gap={6}>
             <Link
               href="https://discord.gg/pixelminer"
-              target="_blank"
-              _hover={{ color: neon.pink }}
+              isExternal
+              _hover={{ color: neon.blue }}
             >
-              <Icon as={FaDiscord} w={8} h={8} color={neon.blue} />
+              <Icon as={FaDiscord} w={8} h={8} />
             </Link>
             <Link
               href="https://twitter.com/pixelminer"
-              target="_blank"
-              _hover={{ color: neon.pink }}
+              isExternal
+              _hover={{ color: neon.blue }}
             >
-              <Icon as={FaTwitter} w={8} h={8} color={neon.blue} />
+              <Icon as={FaTwitter} w={8} h={8} />
             </Link>
             <Link
-              href="https://github.com/posgame3/web3miner"
-              target="_blank"
-              _hover={{ color: neon.pink }}
+              href="https://github.com/pixelminer"
+              isExternal
+              _hover={{ color: neon.blue }}
             >
-              <Icon as={FaGithub} w={8} h={8} color={neon.blue} />
+              <Icon as={FaGithub} w={8} h={8} />
             </Link>
           </Flex>
         </VStack>
