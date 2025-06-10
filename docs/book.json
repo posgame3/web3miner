@@ -1,0 +1,14 @@
+{
+  "title": "PIXELMINER Documentation",
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md"
+  },
+  "plugins": [
+    "theme-default",
+    "highlight",
+    "search",
+    "sharing",
+    "fontsettings"
+  ]
+} 

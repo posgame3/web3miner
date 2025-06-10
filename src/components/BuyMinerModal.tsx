@@ -17,7 +17,7 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import { TileCoords } from './MiningGrid';
-import { useAccount, useBalance, useContractRead, useContractWrite, useWaitForTransactionReceipt, WriteContractReturnType } from 'wagmi';
+import { useAccount, useBalance, useContractRead, useContractWrite, useWaitForTransactionReceipt } from 'wagmi';
 import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
 import { parseEther, formatEther } from 'viem';
 import { FaLaptop, FaServer, FaDesktop, FaMicrochip } from 'react-icons/fa';
@@ -164,30 +164,31 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     }
   };
 
-  const handleBuy = async () => {
-    if (!selectedTile) {
-      toast({ title: 'Select a tile first!', status: 'warning' });
-      return;
-    }
-    if (!hasEnoughBalance) {
-      toast({ title: 'Not enough PXL', status: 'error' });
-      return;
-    }
-    if (!hasEnoughAllowance) {
-      toast({ title: 'Approve PXL first', status: 'warning' });
-      return;
-    }
-
+  const handleBuyMiner = async () => {
     try {
-      const tx = {
+      if (!selectedType || !selectedTile) {
+        toast({
+          title: 'Error',
+          description: 'Please select a miner type and position',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      const referrer = localStorage.getItem('referrer') || '0x0000000000000000000000000000000000000000';
+      
+      const result = await writeContract({
         address: MINING_ADDRESS as `0x${string}`,
         abi: MINING_ABI,
-        functionName: 'buyMiner',
-        args: [selectedType + 2, selectedTile.x, selectedTile.y],
+        functionName: 'purchaseMiner',
+        args: [selectedType, selectedTile.x, selectedTile.y, referrer],
+        value: minerPrice,
         chain: undefined,
         account: address
-      };
-      const result = await writeContract(tx);
+      });
+
       if (result) {
         setBuyTxHash(result as `0x${string}`);
         toast({
@@ -195,13 +196,12 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
           description: 'Waiting for confirmation...',
           status: 'info',
           duration: 5000,
-          isClosable: true
+          isClosable: true,
         });
       }
     } catch (error: any) {
-      console.error('Buy error:', error);
       toast({
-        title: 'Purchase failed',
+        title: 'Error purchasing miner',
         description: error.message,
         status: 'error',
         duration: 5000,
@@ -430,7 +430,7 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
                       bg: 'neon.pink',
                       boxShadow: '0 0 16px #FF00CC',
                     }}
-                    onClick={handleBuy}
+                    onClick={handleBuyMiner}
                     isLoading={isBuying || isConfirming}
                     loadingText={isBuying ? "Buying..." : "Confirming..."}
                     isDisabled={!hasEnoughBalance}
