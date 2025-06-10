@@ -16,32 +16,47 @@ PIXELMINER is your gateway to the world of decentralized mining. This guide will
 
 ### 2. Get Your First Mining Rig
 1. Navigate to the Mining Room
-2. Click "Buy Miner"
-3. Choose your first mining rig:
-   - **Basic Rig**: 100 PXL (Entry level)
-   - **Advanced Rig**: 500 PXL (Better efficiency)
-   - **Professional Rig**: 2000 PXL (Maximum output)
+2. Click "Buy Facility" (costs 0.001 ETH)
+3. After purchasing the facility, you'll receive a FREE starter miner:
+   - **Starter Miner**: 120 H/s hashrate
+   - **Power Consumption**: 12 GW
+   - **Placement**: Choose any available tile in your 2x2 grid
 
 ### 3. Start Mining
-1. Your rig will automatically start mining
-2. Watch your PXL rewards accumulate
+1. Your starter miner will automatically begin mining
+2. Watch your PXL rewards accumulate in real-time
 3. Claim rewards when ready (24h cooldown between claims)
 
 ## Mining Mechanics ⛏️
 
-### Understanding Hashrate
-- Each rig has a base hashrate
-- Higher hashrate = More PXL rewards
-- Network difficulty adjusts automatically
-- Your share of rewards = Your hashrate / Total network hashrate
+### Understanding Hashrate and Rewards
+
+#### Starter Miner Details
+- **Base Hashrate**: 120 H/s (Hash per second)
+- **Power Consumption**: 12 GW
+- **Reward Calculation**: 
+  ```
+  Your Share = (Your Hashrate / Total Network Hashrate) * Current Block Reward
+  Daily PXL = Your Share * Blocks Per Day
+  ```
+  Where:
+  - Blocks Per Day = ~43200 (2-second block time)
+  - Current Block Reward = Initial Reward / (2 ^ Halvings)
+
+#### Hash Power Calculation
+1. **Base Hashrate**: Each miner has a base hashrate
+2. **Network Difficulty**: Adjusts automatically based on total network hashrate
+3. **Reward Distribution**: Your share = Your hashrate / Total network hashrate
+4. **Real-time Updates**: Rewards update every block (approximately every 2 seconds)
 
 ### Mining Rigs Comparison
 
-| Rig Type | Base Hashrate | PXL Cost | Daily PXL (Est.) |
-|----------|---------------|----------|------------------|
-| Basic    | 1 H/s         | 100 PXL  | 10-15 PXL        |
-| Advanced | 5 H/s         | 500 PXL  | 50-75 PXL        |
-| Pro      | 20 H/s        | 2000 PXL | 200-300 PXL      |
+| Rig Type | Base Hashrate | Power Consumption | PXL Cost |
+|----------|---------------|-------------------|----------|
+| Starter  | 120 H/s       | 12 GW            | FREE     |
+| Basic    | 320 H/s       | 18 GW            | 120 PXL  |
+| Advanced | 600 H/s       | 22 GW            | 220 PXL  |
+| Pro      | 920 H/s       | 30 GW            | 402 PXL  |
 
 ### Maximizing Your Mining
 1. **Regular Upgrades**
