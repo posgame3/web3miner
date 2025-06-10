@@ -162,7 +162,7 @@ const Home = () => {
             </Button>
             <Button
               as="a"
-              href="http://localhost:8080"
+              href="https://pixelminer.gitbook.io/pixelminer-docs-1/"
               target="_blank"
               size="lg"
               variant="outline"

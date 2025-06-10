@@ -789,7 +789,7 @@ const Room = () => {
               transform: 'scale(0.95)',
             }}
             as="a"
-            href="https://docs.pixelminer.org/"
+            href="https://pixelminer.gitbook.io/pixelminer-docs-1/"
             target="_blank"
             rel="noopener noreferrer"
             transition="all 0.2s"

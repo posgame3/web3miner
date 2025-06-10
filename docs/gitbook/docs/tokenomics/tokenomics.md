@@ -1,5 +1,8 @@
 # Tokenomics
 
+## Overview
+PixelMiner's tokenomics is designed to ensure long-term sustainability and fair distribution of PXL tokens through mining rewards and referral system.
+
 ## Token Distribution
 
 Total Supply: 420,000,000 PXL
@@ -36,32 +39,41 @@ Mining rewards are halved every 1,296,000 blocks (approximately 30 days) to ensu
 
 1. Initial Phase (0-30 days):
    - Base mining rate: 50 PXL per block
-   - Target: Reach 10% of max supply
 
 2. First Halving (30-60 days):
    - Base mining rate: 25 PXL per block
-   - Target: Reach 20% of max supply
 
 3. Second Halving (60-90 days):
    - Base mining rate: 12.5 PXL per block
-   - Target: Reach 30% of max supply
 
-And so on until reaching the maximum supply of 420,000,000 PXL
+## Economic Model
 
-## Deflationary Mechanisms
+### Supply Control
+- Maximum supply cap of 420,000,000 PXL
+- Regular halving events
+- Token burning mechanisms
+- Controlled emission schedule
 
-### Burn Rates
-- 75% of miner purchase costs are burned
-- 75% of facility upgrade costs are burned
-- Referral fee: 2.5% of mining rewards
-- Burn tracking through `amtBurned` in smart contract
+### Deflationary Mechanisms
+- 75% of miner purchases burned
+- 75% of facility upgrades burned
+- 2.5% referral fee
 
-### Token Burning
-The contract implements a burn mechanism that:
-- Tracks total burned amount
-- Ensures MAX_SUPPLY is never exceeded
-- Reduces circulating supply over time
-- Increases token scarcity
+## Token Utility
+
+### Current Features
+1. **Mining Equipment Purchase**
+   - Used to purchase different types of mining equipment
+   - Higher-tier equipment requires more PXL tokens
+
+2. **Facility Upgrades**
+   - Upgrade mining facilities to increase efficiency
+   - Unlock additional features and capabilities
+
+### Coming Soon
+- Staking System
+- Governance
+- DeFi Integration
 
 ## Miner Tiers
 
@@ -110,50 +122,6 @@ The contract implements a burn mechanism that:
 - Plan your upgrades strategically
 - Consider power requirements of future miners
 - Upgrade timing affects overall mining efficiency
-
-## Token Utility
-
-PXL tokens serve multiple purposes within the PixelMiner ecosystem:
-
-1. **Mining Equipment Purchase**
-   - Used to purchase different types of mining equipment
-   - Higher-tier equipment requires more PXL tokens
-
-2. **Facility Upgrades**
-   - Upgrade mining facilities to increase efficiency
-   - Unlock additional features and capabilities
-
-3. **Governance**
-   - Token holders can participate in protocol governance
-   - Vote on important protocol decisions and updates
-
-4. **Staking**
-   - Stake PXL tokens to earn additional rewards
-   - Participate in network security
-
-## Economic Model
-
-The PixelMiner economic model is designed to ensure:
-
-1. **Long-term Sustainability**
-   - Regular halving events control token emission
-   - Balanced distribution between mining and other uses
-   - Maximum supply cap of 420,000,000 PXL
-
-2. **Fair Distribution**
-   - Majority of tokens allocated to mining rewards
-   - Equal opportunity for all participants
-   - Controlled initial supply of 4,200,000 PXL
-
-3. **Value Accrual**
-   - Multiple utility cases for PXL tokens
-   - Growing ecosystem increases token demand
-   - Mining rewards based on hashrate contribution
-
-4. **Anti-inflationary Measures**
-   - Controlled token emission through halving
-   - Burning mechanisms for excess tokens
-   - Maximum supply limit
 
 ## Future Developments
 

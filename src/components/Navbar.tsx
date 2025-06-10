@@ -9,6 +9,14 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  VStack,
+  Text,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
@@ -16,32 +24,63 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 
 const Links = [
-  { name: 'Home', path: '/' },
-  { name: 'Mining', path: '/mining' },
-  { name: 'Staking', path: '/stake' },
+  { name: 'Room', path: '/room' },
+  { name: 'Trade', href: 'https://dexscreener.com/base/' },
+  { name: 'Stake', path: '/stake' },
   { name: 'Referral', path: '/referral' },
+  { name: 'Docs', href: 'https://pixelminer.gitbook.io/pixelminer-docs-1/' },
+  { name: 'X', href: 'https://twitter.com/ethermax' },
 ];
 
-const NavLink = ({ children, to }: { children: React.ReactNode; to: string }) => (
-  <Link
-    as={RouterLink}
-    px={2}
-    py={1}
-    rounded={'md'}
-    to={to}
-    fontFamily="'Press Start 2P', monospace"
-    fontSize="sm"
-    color="white"
-    _hover={{
-      textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
-      color: '#00E8FF',
-      textShadow: '0 0 8px #00E8FF',
-    }}
-  >
-    {children}
-  </Link>
-);
+const NavLink = ({ children, to, href }: { children: React.ReactNode; to?: string; href?: string }) => {
+  const neon = {
+    blue: '#00E8FF',
+    pink: '#FF2E63',
+  };
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        px={3}
+        py={2}
+        rounded={'md'}
+        color={neon.blue}
+        sx={{
+          textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
+        }}
+        _hover={{
+          color: neon.pink,
+          textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
+        }}
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      as={RouterLink}
+      to={to || '/'}
+      px={3}
+      py={2}
+      rounded={'md'}
+      color={neon.blue}
+      sx={{
+        textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
+      }}
+      _hover={{
+        color: neon.pink,
+        textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
+      }}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -109,7 +148,7 @@ export default function Navbar() {
             as={RouterLink}
             to="/"
             fontFamily="'Press Start 2P', monospace"
-            fontSize="xl"
+            fontSize={{ base: "md", md: "xl" }}
             fontWeight="bold"
             color={neon.blue}
             sx={{
@@ -122,111 +161,12 @@ export default function Navbar() {
           >
             PIXELMINER
           </Link>
-          <HStack ml={10} spacing={4}>
-            <Link
-              as={RouterLink}
-              to="/room"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              Room
-            </Link>
-            <Link
-              as={RouterLink}
-              to="/trade"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              Trade
-            </Link>
-            <Link
-              as={RouterLink}
-              to="/stake"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              Stake
-            </Link>
-            <Link
-              as={RouterLink}
-              to="/referral"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              Referral
-            </Link>
-            <Link
-              href="http://localhost:8080"
-              target="_blank"
-              rel="noopener noreferrer"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              Docs
-            </Link>
-            <Link
-              href="https://twitter.com/ethermax"
-              target="_blank"
-              rel="noopener noreferrer"
-              px={3}
-              py={2}
-              rounded={'md'}
-              color={neon.blue}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              _hover={{
-                color: neon.pink,
-                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
-              }}
-            >
-              X
-            </Link>
+          <HStack ml={10} spacing={4} display={{ base: 'none', md: 'flex' }}>
+            {Links.map((link) => (
+              <NavLink key={link.name} to={link.path} href={link.href}>
+                {link.name}
+              </NavLink>
+            ))}
           </HStack>
         </Flex>
 
@@ -253,6 +193,7 @@ export default function Navbar() {
               sx={{
                 textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
               }}
+              display={{ base: 'none', md: 'flex' }}
             >
               {address?.slice(0, 6)}...{address?.slice(-4)}
             </Button>
@@ -278,24 +219,104 @@ export default function Navbar() {
               sx={{
                 textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
               }}
+              display={{ base: 'none', md: 'flex' }}
             >
               Connect Wallet
             </Button>
           )}
+
+          <IconButton
+            size={'md'}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label={'Open Menu'}
+            display={{ base: 'flex', md: 'none' }}
+            onClick={isOpen ? onClose : onOpen}
+            bg={neon.blue}
+            color="white"
+            _hover={{
+              bg: neon.pink,
+              boxShadow: `0 0 16px ${neon.pink}88`
+            }}
+          />
         </Flex>
       </Flex>
 
-      {isOpen ? (
-        <Box pb={4} display={{ md: 'none' }}>
-          <Stack as={'nav'} spacing={4}>
-            {Links.map((link) => (
-              <NavLink key={link.name} to={link.path}>
-                {link.name}
-              </NavLink>
-            ))}
-          </Stack>
-        </Box>
-      ) : null}
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent bg={neon.panel}>
+          <DrawerCloseButton color={neon.blue} />
+          <DrawerHeader borderBottomWidth="1px" borderColor={`${neon.blue}44`}>
+            <Text color={neon.blue} fontFamily="'Press Start 2P', monospace">Menu</Text>
+          </DrawerHeader>
+
+          <DrawerBody>
+            <VStack spacing={4} align="stretch">
+              {Links.map((link) => (
+                <NavLink key={link.name} to={link.path} href={link.href}>
+                  {link.name}
+                </NavLink>
+              ))}
+              {isConnected ? (
+                <Button
+                  onClick={() => {
+                    disconnect();
+                    onClose();
+                  }}
+                  bg={neon.blue}
+                  color="white"
+                  _hover={{
+                    bg: neon.pink,
+                    boxShadow: `0 0 16px ${neon.pink}88`
+                  }}
+                  fontFamily="'Press Start 2P', monospace"
+                  fontSize="xs"
+                  px={6}
+                  py={4}
+                  borderRadius="md"
+                  border="2px solid"
+                  borderColor={neon.blue}
+                  _active={{
+                    transform: 'scale(0.95)',
+                  }}
+                  sx={{
+                    textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
+                  }}
+                >
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    connect({ connector: injected() });
+                    onClose();
+                  }}
+                  bg={neon.blue}
+                  color="white"
+                  _hover={{
+                    bg: neon.pink,
+                    boxShadow: `0 0 16px ${neon.pink}88`
+                  }}
+                  fontFamily="'Press Start 2P', monospace"
+                  fontSize="xs"
+                  px={6}
+                  py={4}
+                  borderRadius="md"
+                  border="2px solid"
+                  borderColor={neon.blue}
+                  _active={{
+                    transform: 'scale(0.95)',
+                  }}
+                  sx={{
+                    textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
+                  }}
+                >
+                  Connect Wallet
+                </Button>
+              )}
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 } 

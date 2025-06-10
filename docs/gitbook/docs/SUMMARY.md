@@ -1,15 +1,9 @@
 # Summary
 
-* [Introduction](README.md)
+## Introduction
+* [Welcome to PixelMiner](README.md)
 * [What is PixelMiner?](introduction/what-is-pixelminer.md)
 * [Getting Started](guide/getting-started.md)
-* [Tokenomics](tokenomics/tokenomics.md)
-* [Technical Documentation](technical-documentation.md)
-* [User Guide](user-guide.md)
-* [API Reference](api-reference.md)
-* [FAQ](faq.md)
-* [Contributing](contributing.md)
-* [Build Guide](BUILD.md)
 
 ## Game Mechanics
 * [Mining Basics](game-mechanics/mining-basics.md)
