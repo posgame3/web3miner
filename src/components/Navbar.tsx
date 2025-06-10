@@ -1,9 +1,50 @@
-import { Box, Flex, Button, Link as ChakraLink, useColorModeValue, HStack, Text } from '@chakra-ui/react';
+import React from 'react';
+import {
+  Box,
+  Flex,
+  HStack,
+  Link,
+  IconButton,
+  Button,
+  useDisclosure,
+  useColorModeValue,
+  Stack,
+} from '@chakra-ui/react';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 
-const Navbar = () => {
+const Links = [
+  { name: 'Home', path: '/' },
+  { name: 'Mining', path: '/mining' },
+  { name: 'Staking', path: '/stake' },
+  { name: 'Referral', path: '/referral' },
+];
+
+const NavLink = ({ children, to }: { children: React.ReactNode; to: string }) => (
+  <Link
+    as={RouterLink}
+    px={2}
+    py={1}
+    rounded={'md'}
+    to={to}
+    fontFamily="'Press Start 2P', monospace"
+    fontSize="sm"
+    color="white"
+    _hover={{
+      textDecoration: 'none',
+      bg: useColorModeValue('gray.200', 'gray.700'),
+      color: '#00E8FF',
+      textShadow: '0 0 8px #00E8FF',
+    }}
+  >
+    {children}
+  </Link>
+);
+
+export default function Navbar() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
@@ -64,10 +105,11 @@ const Navbar = () => {
     >
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'} position="relative" zIndex={2}>
         <Flex alignItems={'center'}>
-          <ChakraLink 
-            as={RouterLink} 
-            to="/" 
-            fontSize="xl" 
+          <Link
+            as={RouterLink}
+            to="/"
+            fontFamily="'Press Start 2P', monospace"
+            fontSize="xl"
             fontWeight="bold"
             color={neon.blue}
             sx={{
@@ -79,13 +121,13 @@ const Navbar = () => {
             }}
           >
             PIXELMINER
-          </ChakraLink>
+          </Link>
           <HStack ml={10} spacing={4}>
-            <ChakraLink 
-              as={RouterLink} 
-              to="/room" 
-              px={3} 
-              py={2} 
+            <Link
+              as={RouterLink}
+              to="/room"
+              px={3}
+              py={2}
               rounded={'md'}
               color={neon.blue}
               sx={{
@@ -97,12 +139,12 @@ const Navbar = () => {
               }}
             >
               Room
-            </ChakraLink>
-            <ChakraLink 
-              as={RouterLink} 
-              to="/trade" 
-              px={3} 
-              py={2} 
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/trade"
+              px={3}
+              py={2}
               rounded={'md'}
               color={neon.blue}
               sx={{
@@ -114,12 +156,12 @@ const Navbar = () => {
               }}
             >
               Trade
-            </ChakraLink>
-            <ChakraLink 
-              as={RouterLink} 
-              to="/stake" 
-              px={3} 
-              py={2} 
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/stake"
+              px={3}
+              py={2}
               rounded={'md'}
               color={neon.blue}
               sx={{
@@ -131,13 +173,30 @@ const Navbar = () => {
               }}
             >
               Stake
-            </ChakraLink>
-            <ChakraLink 
-              href="http://localhost:8080" 
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/referral"
+              px={3}
+              py={2}
+              rounded={'md'}
+              color={neon.blue}
+              sx={{
+                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
+              }}
+              _hover={{
+                color: neon.pink,
+                textShadow: `0 0 10px ${neon.pink}88, 0 0 20px ${neon.pink}44`
+              }}
+            >
+              Referral
+            </Link>
+            <Link
+              href="http://localhost:8080"
               target="_blank"
               rel="noopener noreferrer"
-              px={3} 
-              py={2} 
+              px={3}
+              py={2}
               rounded={'md'}
               color={neon.blue}
               sx={{
@@ -149,13 +208,13 @@ const Navbar = () => {
               }}
             >
               Docs
-            </ChakraLink>
-            <ChakraLink 
-              href="https://twitter.com/ethermax" 
+            </Link>
+            <Link
+              href="https://twitter.com/ethermax"
               target="_blank"
               rel="noopener noreferrer"
-              px={3} 
-              py={2} 
+              px={3}
+              py={2}
               rounded={'md'}
               color={neon.blue}
               sx={{
@@ -167,7 +226,7 @@ const Navbar = () => {
               }}
             >
               X
-            </ChakraLink>
+            </Link>
           </HStack>
         </Flex>
 
@@ -198,8 +257,8 @@ const Navbar = () => {
               {address?.slice(0, 6)}...{address?.slice(-4)}
             </Button>
           ) : (
-            <Button 
-              onClick={() => connect({ connector: injected() })} 
+            <Button
+              onClick={() => connect({ connector: injected() })}
               bg={neon.blue}
               color="white"
               _hover={{
@@ -225,8 +284,18 @@ const Navbar = () => {
           )}
         </Flex>
       </Flex>
+
+      {isOpen ? (
+        <Box pb={4} display={{ md: 'none' }}>
+          <Stack as={'nav'} spacing={4}>
+            {Links.map((link) => (
+              <NavLink key={link.name} to={link.path}>
+                {link.name}
+              </NavLink>
+            ))}
+          </Stack>
+        </Box>
+      ) : null}
     </Box>
   );
-};
-
-export default Navbar; 
+} 
