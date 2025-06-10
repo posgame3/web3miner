@@ -1,46 +1,79 @@
-# Welcome to PIXELMINER Documentation
+# Welcome to PixelMiner Documentation
 
-Welcome to the official documentation for PIXELMINER, the revolutionary blockchain-based mining game where you can play, earn, and upgrade your mining empire!
-
-## What is PIXELMINER?
-
-PIXELMINER is a decentralized mining game that combines the excitement of gaming with the potential of blockchain technology. Players can:
-
-- Build and manage their own mining facilities
-- Purchase and upgrade miners
-- Earn PXL tokens through mining operations
-- Trade miners and resources on the marketplace
-- Stake tokens for additional rewards
+PixelMiner is a decentralized mining simulation game built on Base L2, where players can build and manage their mining operations to earn PXL tokens.
 
 ## Quick Start
 
-1. [Connect your wallet](/guide/getting-started.md#connecting-your-wallet)
-2. [Purchase your first miner](/guide/mining-basics.md#purchasing-miners)
-3. [Start mining PXL tokens](/guide/mining-basics.md#mining-mechanics)
-4. [Upgrade your facilities](/guide/facilities.md#upgrading-facilities)
+1. Connect your wallet (MetaMask recommended)
+2. Purchase your first facility (0.01 ETH)
+3. Claim your free starter miner
+4. Start mining PXL tokens
+5. Expand your operation with more miners and facilities
 
 ## Key Features
 
-- **Decentralized Mining**: All mining operations are secured by smart contracts
-- **Real-time Rewards**: Earn PXL tokens as you mine
-- **Upgrade System**: Improve your mining efficiency through upgrades
-- **Marketplace**: Trade miners and resources with other players
-- **Staking**: Earn additional rewards by staking your PXL tokens
+- **Mining System**: Earn PXL tokens by operating miners
+- **Facility Management**: Build and upgrade mining facilities
+- **Token Economics**: Deflationary token model with controlled emission
+- **Referral System**: Earn 2.5% of referred players' mining rewards
+- **Upgrade System**: Progress through different miner tiers and facility levels
+
+## Tokenomics
+
+### PXL Token
+- **Total Supply**: 420,000,000 PXL
+- **Initial Supply**: 4,200,000 PXL (1% of total supply)
+- **Block Reward**: 50 PXL per block
+- **Block Time**: ~12 seconds
+- **Halving**: Every 1,296,000 blocks (~30 days)
+
+### Distribution
+- 40% - Mining Rewards
+- 20% - Team & Development
+- 15% - Marketing & Partnerships
+- 15% - Liquidity Pool
+- 10% - Community & Ecosystem
+
+### Deflationary Mechanisms
+- 75% of miner purchase costs burned
+- 75% of facility upgrade costs burned
+- Referral fee: 2.5% of mining rewards
+- Maximum supply cap enforced by smart contract
 
 ## Getting Started
 
-Check out our [Getting Started Guide](/guide/getting-started.md) to begin your PIXELMINER journey!
+1. **Wallet Setup**
+   - Install MetaMask
+   - Add Base L2 network
+   - Get some ETH for gas fees
+
+2. **First Steps**
+   - Purchase initial facility (0.01 ETH)
+   - Claim free starter miner
+   - Start mining PXL tokens
+
+3. **Expanding Your Operation**
+   - Buy more miners with PXL
+   - Upgrade your facility
+   - Optimize power usage
+   - Refer other players
+
+## Resources
+
+- [User Guide](user-guide.md)
+- [Technical Documentation](technical-documentation.md)
+- [API Reference](api-reference.md)
+- [FAQ](faq.md)
 
 ## Community
 
-Join our vibrant community:
 - [Discord](https://discord.gg/pixelminer)
 - [Twitter](https://twitter.com/pixelminer)
 - [GitHub](https://github.com/posgame3/web3miner)
 
 ## Support
 
-Need help? Check out our [FAQ](/community/faq.md) or join our [Discord community](/community/discord.md) for support.
+Need help? Join our [Discord](https://discord.gg/pixelminer) or check the [FAQ](faq.md) for common questions and answers.
 
 ---
 

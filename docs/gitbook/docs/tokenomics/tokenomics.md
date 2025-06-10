@@ -3,7 +3,7 @@
 ## Token Distribution
 
 Total Supply: 420,000,000 PXL
-Initial Supply: 4,200,000 PXL
+Initial Supply: 4,200,000 PXL (1% of total supply)
 
 Initial Distribution:
 - 40% - Mining Rewards
@@ -24,47 +24,67 @@ Miners increase your hashrate on the PixelMiner network, enabling PXL rewards. E
 Players can buy miners anytime with PXL, as long as they have enough power output in their facility.
 
 ### Mining Rewards
-Rewards are calculated based on the total hashrate of your mining operation, not fixed token amounts per hour. The more hashrate you have, the more PXL tokens you can mine.
+- Initial block reward: 50 PXL per block
+- Block time: ~12 seconds (Base network)
+- Blocks per day: ~7,200
+- Daily network emission: ~360,000 PXL
+- Monthly network emission: ~10,800,000 PXL
+- Yearly network emission: ~131,400,000 PXL
 
 ### Halving Schedule
-Mining rewards are halved every 6 months to ensure long-term sustainability and controlled token emission:
+Mining rewards are halved every 1,296,000 blocks (approximately 30 days) to ensure long-term sustainability and controlled token emission:
 
-1. Initial Phase (0-6 months):
-   - Base mining rate: 100%
+1. Initial Phase (0-30 days):
+   - Base mining rate: 50 PXL per block
    - Target: Reach 10% of max supply
 
-2. First Halving (6-12 months):
-   - Base mining rate: 50%
+2. First Halving (30-60 days):
+   - Base mining rate: 25 PXL per block
    - Target: Reach 20% of max supply
 
-3. Second Halving (12-18 months):
-   - Base mining rate: 25%
+3. Second Halving (60-90 days):
+   - Base mining rate: 12.5 PXL per block
    - Target: Reach 30% of max supply
 
 And so on until reaching the maximum supply of 420,000,000 PXL
 
+## Deflationary Mechanisms
+
+### Burn Rates
+- 75% of miner purchase costs are burned
+- 75% of facility upgrade costs are burned
+- Referral fee: 2.5% of mining rewards
+- Burn tracking through `amtBurned` in smart contract
+
+### Token Burning
+The contract implements a burn mechanism that:
+- Tracks total burned amount
+- Ensures MAX_SUPPLY is never exceeded
+- Reduces circulating supply over time
+- Increases token scarcity
+
 ## Miner Tiers
 
 ### Tier 1 - Starter Miner
-- Hashrate: 320 GH/s
-- Power Consumption: 12 GW
+- Hashrate: 100 H/s
+- Power Consumption: 1 GW
 - Cost: Free (one-time claim)
 - Ideal for: Beginners and small operations
 
 ### Tier 2 - Gaming PC
-- Hashrate: 600 GH/s
+- Hashrate: 600 H/s
 - Power Consumption: 18 GW
 - Cost: 120 PXL
 - Ideal for: Growing mining operations
 
 ### Tier 3 - Hacking PC
-- Hashrate: 920 GH/s
+- Hashrate: 920 H/s
 - Power Consumption: 22 GW
 - Cost: 220 PXL
 - Ideal for: Serious miners
 
 ### Tier 4 - Master Race
-- Hashrate: 1500 GH/s
+- Hashrate: 1500 H/s
 - Power Consumption: 30 GW
 - Cost: 402 PXL
 - Ideal for: Professional mining facilities
@@ -76,7 +96,7 @@ And so on until reaching the maximum supply of 420,000,000 PXL
 - Miners require power to operate
 - Exceeding power capacity reduces mining efficiency
 - Upgrade facilities to increase power capacity
-- **Important**: There is a 24-hour cooldown period between facility upgrades to the next level
+- **Important**: There is a 24-hour cooldown period between facility upgrades
 
 ### Hashrate Optimization
 - Higher hashrate = more mining rewards
