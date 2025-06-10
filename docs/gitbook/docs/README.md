@@ -21,18 +21,15 @@ PixelMiner is a decentralized mining simulation game built on Base L2, where pla
 ## Tokenomics
 
 ### PXL Token
-- **Total Supply**: 420,000,000 PXL
-- **Initial Supply**: 4,200,000 PXL (1% of total supply)
-- **Block Reward**: 50 PXL per block
-- **Block Time**: ~12 seconds
-- **Halving**: Every 1,296,000 blocks (~30 days)
+- **Total Supply**: 1,000,000,000 PXL
+- **Initial Price**: 0.0001 ETH
+- **Halving Events**: Every 100,000 blocks
 
 ### Distribution
 - 40% - Mining Rewards
-- 20% - Team & Development
-- 15% - Marketing & Partnerships
-- 15% - Liquidity Pool
-- 10% - Community & Ecosystem
+- 30% - Staking Pool
+- 20% - Development Fund
+- 10% - Community Treasury
 
 ### Deflationary Mechanisms
 - 75% of miner purchase costs burned
