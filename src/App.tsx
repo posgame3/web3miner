@@ -7,6 +7,7 @@ import Mining from './pages/Mining';
 import Home from './pages/Home';
 import Stake from './pages/Stake';
 import Referral from './pages/Referral';
+import TokenAddress from './components/TokenAddress';
 
 function App() {
   useEffect(() => {
@@ -22,6 +23,7 @@ function App() {
     <ChakraProvider>
       <Router>
         <Box minH="100vh" bg="gray.900" color="white">
+          <TokenAddress />
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

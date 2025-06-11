@@ -170,7 +170,7 @@ export default function Navbar() {
           </HStack>
         </Flex>
 
-        <Flex alignItems={'center'}>
+        <HStack spacing={4}>
           {isConnected ? (
             <Button
               onClick={() => disconnect()}
@@ -180,22 +180,8 @@ export default function Navbar() {
                 bg: neon.pink,
                 boxShadow: `0 0 16px ${neon.pink}88`
               }}
-              fontFamily="'Press Start 2P', monospace"
-              fontSize="xs"
-              px={6}
-              py={4}
-              borderRadius="md"
-              border="2px solid"
-              borderColor={neon.blue}
-              _active={{
-                transform: 'scale(0.95)',
-              }}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              display={{ base: 'none', md: 'flex' }}
             >
-              {address?.slice(0, 6)}...{address?.slice(-4)}
+              {`${address?.slice(0, 6)}...${address?.slice(-4)}`}
             </Button>
           ) : (
             <Button
@@ -206,22 +192,8 @@ export default function Navbar() {
                 bg: neon.pink,
                 boxShadow: `0 0 16px ${neon.pink}88`
               }}
-              fontFamily="'Press Start 2P', monospace"
-              fontSize="xs"
-              px={6}
-              py={4}
-              borderRadius="md"
-              border="2px solid"
-              borderColor={neon.blue}
-              _active={{
-                transform: 'scale(0.95)',
-              }}
-              sx={{
-                textShadow: `0 0 10px ${neon.blue}88, 0 0 20px ${neon.blue}44`
-              }}
-              display={{ base: 'none', md: 'flex' }}
             >
-              Connect Wallet
+              Connect
             </Button>
           )}
 
@@ -238,7 +210,7 @@ export default function Navbar() {
               boxShadow: `0 0 16px ${neon.pink}88`
             }}
           />
-        </Flex>
+        </HStack>
       </Flex>
 
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>

@@ -52,7 +52,6 @@ const Home = () => {
   return (
     <Box 
       minH="100vh" 
-      py={20}
       position="relative"
       overflow="hidden"
       sx={{
@@ -89,7 +88,7 @@ const Home = () => {
           }
         `}
       </style>
-      <Container maxW="container.xl" position="relative" zIndex={2}>
+      <Container maxW="container.xl" position="relative" zIndex={2} py={20}>
         {/* Hero Section */}
         <VStack spacing={8} mb={20} textAlign="center">
           <Box
