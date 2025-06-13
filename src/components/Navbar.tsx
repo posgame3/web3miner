@@ -29,7 +29,7 @@ const Links = [
   { name: 'Stake', path: '/stake' },
   { name: 'Referral', path: '/referral' },
   { name: 'Docs', href: 'https://pixelminer.gitbook.io/pixelminer-docs-1/' },
-  { name: 'X', href: 'https://twitter.com/ethermax' },
+  { name: 'X', href: 'https://x.com/pixelminerfun' },
 ];
 
 const NavLink = ({ children, to, href }: { children: React.ReactNode; to?: string; href?: string }) => {

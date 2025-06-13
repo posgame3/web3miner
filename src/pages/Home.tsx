@@ -300,27 +300,30 @@ const Home = () => {
         {/* Community Section */}
         <VStack spacing={8}>
           <Heading color={neon.blue}>Join Our Community</Heading>
-          <Flex gap={6}>
+          <Flex gap={4} justify="center" mt={8}>
             <Link
               href="https://discord.gg/pixelminer"
               isExternal
-              _hover={{ color: neon.blue }}
+              _hover={{ transform: 'scale(1.1)' }}
+              transition="all 0.2s"
             >
-              <Icon as={FaDiscord} w={8} h={8} />
+              <Icon as={FaDiscord} w={8} h={8} color={neon.blue} />
             </Link>
             <Link
-              href="https://twitter.com/pixelminer"
+              href="https://x.com/pixelminerfun"
               isExternal
-              _hover={{ color: neon.blue }}
+              _hover={{ transform: 'scale(1.1)' }}
+              transition="all 0.2s"
             >
-              <Icon as={FaTwitter} w={8} h={8} />
+              <Icon as={FaTwitter} w={8} h={8} color={neon.blue} />
             </Link>
             <Link
-              href="https://github.com/pixelminer"
+              href="https://github.com/posgame3/web3miner"
               isExternal
-              _hover={{ color: neon.blue }}
+              _hover={{ transform: 'scale(1.1)' }}
+              transition="all 0.2s"
             >
-              <Icon as={FaGithub} w={8} h={8} />
+              <Icon as={FaGithub} w={8} h={8} color={neon.blue} />
             </Link>
           </Flex>
         </VStack>
