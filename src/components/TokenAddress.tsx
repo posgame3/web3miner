@@ -1,16 +1,10 @@
-import { Box, Container, Flex, Text, Tooltip } from '@chakra-ui/react';
-import { FaCopy } from 'react-icons/fa';
-import { ETHERMAX_ADDRESS } from '../config/contracts';
+import { Box, Container, Flex, Text } from '@chakra-ui/react';
 
 const TokenAddress = () => {
   const neon = {
     blue: '#00E8FF',
     pink: '#FF2E63',
     panel: '#181A20',
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(ETHERMAX_ADDRESS);
   };
 
   return (
@@ -45,28 +39,14 @@ const TokenAddress = () => {
           >
             TOKEN:
           </Text>
-          <Tooltip label="Click to copy" placement="bottom">
-            <Flex
-              align="center"
-              gap={2}
-              cursor="pointer"
-              onClick={handleCopy}
-              _hover={{
-                opacity: 0.8,
-              }}
-              transition="all 0.2s"
-            >
-              <Text
-                fontSize="xs"
-                color="white"
-                fontFamily="monospace"
-                letterSpacing={0.5}
-              >
-                {ETHERMAX_ADDRESS}
-              </Text>
-              <FaCopy size={10} color={neon.blue} />
-            </Flex>
-          </Tooltip>
+          <Text
+            fontSize="xs"
+            color="white"
+            fontFamily="monospace"
+            letterSpacing={0.5}
+          >
+            Coming Soon
+          </Text>
         </Flex>
       </Container>
     </Box>
