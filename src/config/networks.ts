@@ -6,6 +6,7 @@ type NetworkConfig = {
 type Networks = {
   sepolia: NetworkConfig;
   mainnet: NetworkConfig;
+  base: NetworkConfig;
 };
 
 export const networks: Networks = {
@@ -16,11 +17,15 @@ export const networks: Networks = {
   mainnet: {
     MINING_ADDRESS: '', // TODO: Add mainnet addresses after deployment
     ETHERMAX_ADDRESS: ''
+  },
+  base: {
+    MINING_ADDRESS: '0x025007A0D4c9c5b8cC85eE5267fa5D24dbEF0323',
+    ETHERMAX_ADDRESS: '0x37d2f0921e4bA6a316118159c218e56F35a9dC06'
   }
 };
 
-// Get current network from environment variable or default to sepolia
-const network = (process.env.NEXT_PUBLIC_NETWORK || 'sepolia') as keyof Networks;
+// Get current network from environment variable or default to base
+const network = (process.env.NEXT_PUBLIC_NETWORK || 'base') as keyof Networks;
 
 // Export current network configuration
 export const { MINING_ADDRESS, ETHERMAX_ADDRESS } = networks[network]; 

@@ -1,9 +1,9 @@
 import { http, createConfig } from 'wagmi';
-import { mainnet, sepolia } from 'wagmi/chains';
+import { mainnet, sepolia, base } from 'wagmi/chains';
 import { injected } from 'wagmi/connectors';
 
 const config = createConfig({
-  chains: [mainnet, sepolia],
+  chains: [mainnet, sepolia, base],
   connectors: [
     injected({
       shimDisconnect: true,
@@ -12,6 +12,7 @@ const config = createConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
+    [base.id]: http(),
   },
 });
 

@@ -1,10 +1,35 @@
-import { Box, Container, Flex, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, Text, IconButton, useToast } from '@chakra-ui/react';
+import { CopyIcon } from '@chakra-ui/icons';
 
 const TokenAddress = () => {
+  const toast = useToast();
   const neon = {
     blue: '#00E8FF',
     pink: '#FF2E63',
     panel: '#181A20',
+  };
+
+  const tokenAddress = "0x37d2f0921e4bA6a316118159c218e56F35a9dC06";
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(tokenAddress);
+      toast({
+        title: "Adres skopiowany!",
+        description: "Adres tokenu został skopiowany do schowka",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: "Błąd kopiowania",
+        description: "Nie udało się skopiować adresu",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -37,16 +62,33 @@ const TokenAddress = () => {
             letterSpacing={1}
             textShadow="0 0 8px #00E8FF"
           >
-            TOKEN:
+            ETHERMAX TOKEN:
           </Text>
           <Text
             fontSize="xs"
             color="white"
             fontFamily="monospace"
             letterSpacing={0.5}
+            cursor="pointer"
+            _hover={{ color: neon.blue }}
+            onClick={copyToClipboard}
           >
-            Coming Soon
+            {tokenAddress}
           </Text>
+          <IconButton
+            aria-label="Kopiuj adres"
+            icon={<CopyIcon />}
+            size="xs"
+            variant="ghost"
+            color={neon.blue}
+            _hover={{ 
+              bg: 'transparent',
+              color: neon.pink,
+              transform: 'scale(1.1)'
+            }}
+            onClick={copyToClipboard}
+            transition="all 0.2s"
+          />
         </Flex>
       </Container>
     </Box>
