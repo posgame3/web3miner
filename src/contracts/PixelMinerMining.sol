@@ -14,8 +14,8 @@ import {NewFacility} from "./types/NewFacility.sol";
 import {Errors} from "./libraries/Errors.sol";
 import {Events} from "./libraries/Events.sol";
 
-// Ethermax main contract
-contract EthermaxMining is Ownable {
+// PixelMiner main contract
+contract PixelMinerMining is Ownable {
     using EnumerableSetLib for EnumerableSetLib.Uint256Set;
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

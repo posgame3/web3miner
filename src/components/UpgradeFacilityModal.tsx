@@ -16,7 +16,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { useAccount, useBalance, useContractRead, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
+import { MINING_ADDRESS, MINING_ABI, PIXELMINER_ADDRESS, PIXELMINER_ABI } from '../config/contracts';
 import { formatEther, parseEther } from 'viem';
 import { writeContract } from '@wagmi/core';
 
@@ -102,15 +102,15 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
   }) as { data: Facility | undefined };
 
   // PXL balance
-  const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
+  const { data: maxxBalance } = useBalance({ address, token: PIXELMINER_ADDRESS });
 
   // Fixed cost for level 2 upgrade
   const fixedUpgradeCost = BigInt(1440 * 10**18); // 1440 PXL in wei
   const hasEnoughBalance = maxxBalance && maxxBalance.value >= fixedUpgradeCost;
 
   const { data: allowance, refetch: refetchAllowance } = useContractRead({
-    address: ETHERMAX_ADDRESS as `0x${string}`,
-    abi: ETHERMAX_ABI,
+    address: PIXELMINER_ADDRESS as `0x${string}`,
+    abi: PIXELMINER_ABI,
     functionName: 'allowance',
     args: [address, MINING_ADDRESS],
     query: { enabled: !!address },
@@ -121,8 +121,8 @@ const UpgradeFacilityModal: React.FC<UpgradeFacilityModalProps> = ({
   const handleApprove = async () => {
     try {
       await writeApprove({
-        address: ETHERMAX_ADDRESS as `0x${string}`,
-        abi: ETHERMAX_ABI,
+        address: PIXELMINER_ADDRESS as `0x${string}`,
+        abi: PIXELMINER_ABI,
         functionName: 'approve',
         args: [MINING_ADDRESS, parseEther('1000000')],
         chain: undefined,

@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { TileCoords } from './MiningGrid';
 import { useAccount, useBalance, useContractRead, useContractWrite, useWaitForTransactionReceipt, UseWriteContractReturnType } from 'wagmi';
-import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
+import { MINING_ADDRESS, MINING_ABI, PIXELMINER_ADDRESS, PIXELMINER_ABI } from '../config/contracts';
 import { parseEther, formatEther } from 'viem';
 import { FaLaptop, FaServer, FaDesktop, FaMicrochip } from 'react-icons/fa';
 
@@ -55,12 +55,12 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
   const { address } = useAccount();
 
   // Saldo PXL
-  const { data: maxxBalance } = useBalance({ address, token: ETHERMAX_ADDRESS });
+  const { data: maxxBalance } = useBalance({ address, token: PIXELMINER_ADDRESS });
 
   // Allowance
   const { data: allowance, refetch: refetchAllowance, isLoading: isAllowanceLoading } = useContractRead({
-    address: ETHERMAX_ADDRESS as `0x${string}`,
-    abi: ETHERMAX_ABI,
+    address: PIXELMINER_ADDRESS as `0x${string}`,
+    abi: PIXELMINER_ABI,
     functionName: 'allowance',
     args: [address, MINING_ADDRESS],
     query: { enabled: !!address },
@@ -136,8 +136,8 @@ const BuyMinerModal: React.FC<BuyMinerModalProps> = ({ isOpen, onClose, selected
     try {
       console.log('Approving PXL tokens...');
       await writeApprove({
-        address: ETHERMAX_ADDRESS as `0x${string}`,
-        abi: ETHERMAX_ABI,
+        address: PIXELMINER_ADDRESS as `0x${string}`,
+        abi: PIXELMINER_ABI,
         functionName: 'approve',
         args: [MINING_ADDRESS, parseEther('1000000')],
         chain: undefined,

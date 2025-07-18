@@ -1,6 +1,6 @@
 import { Box, VStack, Text, HStack } from '@chakra-ui/react';
 import { useAccount, useContractRead } from 'wagmi';
-import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
+import { MINING_ADDRESS, MINING_ABI, PIXELMINER_ADDRESS, PIXELMINER_ABI } from '../config/contracts';
 import { formatEther } from 'viem';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -25,8 +25,8 @@ const NetworkStats = () => {
 
   // Total burned
   const { data: totalBurned } = useContractRead({
-    address: ETHERMAX_ADDRESS,
-    abi: ETHERMAX_ABI,
+    address: PIXELMINER_ADDRESS,
+          abi: PIXELMINER_ABI,
     functionName: 'amtBurned',
   });
 

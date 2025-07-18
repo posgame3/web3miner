@@ -18,7 +18,7 @@ import {
 import { useAccount, useContractRead, useContractWrite, useChainId } from 'wagmi';
 import { useWaitForTransactionReceipt } from 'wagmi';
 import { formatEther, parseEther } from 'viem';
-import { MINING_ADDRESS, MINING_ABI, ETHERMAX_ADDRESS, ETHERMAX_ABI } from '../config/contracts';
+import { MINING_ADDRESS, MINING_ABI, PIXELMINER_ADDRESS, PIXELMINER_ABI } from '../config/contracts';
 import { config } from '../config/wagmi';
 import MiningGrid, { TileCoords } from '../components/MiningGrid';
 import BuyMinerModal from '../components/BuyMinerModal';
@@ -287,8 +287,8 @@ const Room = () => {
 
   // Sprawdzanie allowance
   const { data: allowance } = useContractRead({
-    address: ETHERMAX_ADDRESS as `0x${string}`,
-    abi: ETHERMAX_ABI,
+    address: PIXELMINER_ADDRESS as `0x${string}`,
+    abi: PIXELMINER_ABI,
     functionName: 'allowance',
     args: [address, MINING_ADDRESS],
     query: {
@@ -299,8 +299,8 @@ const Room = () => {
   const handleApproveMAXX = async () => {
     try {
       const hash = await writeContract({
-        address: ETHERMAX_ADDRESS as `0x${string}`,
-        abi: ETHERMAX_ABI,
+        address: PIXELMINER_ADDRESS as `0x${string}`,
+        abi: PIXELMINER_ABI,
         functionName: 'approve',
         args: [MINING_ADDRESS, parseEther('1000000')], // Duża wartość, żeby nie trzeba było często zatwierdzać
       });

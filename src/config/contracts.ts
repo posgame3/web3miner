@@ -1,9 +1,9 @@
-import miningABI from '../abi/EthermaxMining.json';
-import ethermaxABI from '../abi/Ethermax.json';
+import miningABI from '../abi/PixelMinerMining.json';
+import pixelMinerABI from '../abi/PixelMiner.json';
 
 // Adresy z Base Mainnet
-export const ETHERMAX_ADDRESS = '0x37d2f0921e4bA6a316118159c218e56F35a9dC06';
-export const MINING_ADDRESS = '0x025007A0D4c9c5b8cC85eE5267fa5D24dbEF0323';
+export const PIXELMINER_ADDRESS = '0x903D72Ee67BFBA9305819e0881414e5ADd3270D0';
+export const MINING_ADDRESS = '0xb3ca0813C6D07e9c60f74f9B4662911aC3bcccfb';
  
 export const MINING_ABI = miningABI.abi;
-export const ETHERMAX_ABI = ethermaxABI.abi; 
+export const PIXELMINER_ABI = pixelMinerABI.abi; 

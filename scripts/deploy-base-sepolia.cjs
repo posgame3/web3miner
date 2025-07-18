@@ -8,30 +8,30 @@ async function main() {
   console.log("Deploying contracts with account:", deployer.address);
   console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
 
-  // Deploy Ethermax Token
-  console.log("Deploying Ethermax Token...");
-  const Ethermax = await ethers.getContractFactory("Ethermax");
+  // Deploy PixelMiner Token
+  console.log("Deploying PixelMiner Token...");
+  const PixelMiner = await ethers.getContractFactory("PixelMiner");
   const lpAddress = "0x8c6FD82E496CED7432D0829E362f06A051Cbd755";
-  const ethermax = await Ethermax.deploy(lpAddress);
-  await ethermax.deployed();
-  console.log("Ethermax Token deployed to:", ethermax.address);
+  const pixelMiner = await PixelMiner.deploy(lpAddress);
+  await pixelMiner.waitForDeployment();
+  console.log("PixelMiner Token deployed to:", await pixelMiner.getAddress());
 
-  // Deploy EthermaxMining
-  console.log("Deploying EthermaxMining contract...");
-  const EthermaxMining = await ethers.getContractFactory("EthermaxMining");
-  const mining = await EthermaxMining.deploy();
-  await mining.deployed();
-  console.log("EthermaxMining deployed to:", mining.address);
+  // Deploy PixelMinerMining
+  console.log("Deploying PixelMinerMining contract...");
+  const PixelMinerMining = await ethers.getContractFactory("PixelMinerMining");
+  const mining = await PixelMinerMining.deploy();
+  await mining.waitForDeployment();
+  console.log("PixelMinerMining deployed to:", await mining.getAddress());
 
   // Set the token address in the mining contract
   console.log("Setting token address in mining contract...");
-  const tx = await mining.setEthermax(ethermax.address);
+  const tx = await mining.setEthermax(pixelMiner.address);
   await tx.wait();
   console.log("Token address set in mining contract");
 
   // Add mining contract as authorized minter
   console.log("Adding mining contract as authorized minter...");
-  const addMinterTx = await ethermax.addMinter(mining.address);
+  const addMinterTx = await pixelMiner.addMinter(mining.address);
   await addMinterTx.wait();
   console.log("Mining contract added as authorized minter");
 
@@ -61,8 +61,8 @@ async function main() {
 
   console.log("Deployment completed successfully!");
   console.log("Network: Base Sepolia Testnet");
-  console.log("Ethermax Token:", ethermax.address);
-  console.log("EthermaxMining:", mining.address);
+  console.log("PixelMiner Token:", pixelMiner.address);
+  console.log("PixelMinerMining:", mining.address);
   console.log("LP Address:", lpAddress);
   console.log("Deployer:", deployer.address);
 }

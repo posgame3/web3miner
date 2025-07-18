@@ -9,7 +9,7 @@ const TokenAddress = () => {
     panel: '#181A20',
   };
 
-  const tokenAddress = "0x37d2f0921e4bA6a316118159c218e56F35a9dC06";
+  const tokenAddress = "0x903D72Ee67BFBA9305819e0881414e5ADd3270D0";
 
   const copyToClipboard = async () => {
     try {

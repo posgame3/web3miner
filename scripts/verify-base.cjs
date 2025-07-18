@@ -1,36 +1,36 @@
 const { run } = require("hardhat");
 
 async function main() {
-  const ethermaxAddress = "0x37d2f0921e4bA6a316118159c218e56F35a9dC06";
-  const miningAddress = "0x025007A0D4c9c5b8cC85eE5267fa5D24dbEF0323";
+  const pixelMinerAddress = "0x903D72Ee67BFBA9305819e0881414e5ADd3270D0";
+  const miningAddress = "0xb3ca0813C6D07e9c60f74f9B4662911aC3bcccfb";
   const lpAddress = "0x8c6FD82E496CED7432D0829E362f06A051Cbd755";
 
   console.log("Verifying contracts on Base network...");
 
-  // Verify Ethermax Token
-  console.log("Verifying Ethermax Token...");
+  // Verify PixelMiner Token
+  console.log("Verifying PixelMiner Token...");
   try {
     await run("verify:verify", {
-      address: ethermaxAddress,
+      address: pixelMinerAddress,
       constructorArguments: [lpAddress],
       network: "base"
     });
-    console.log("Ethermax Token verified successfully!");
+    console.log("PixelMiner Token verified successfully!");
   } catch (error) {
-    console.log("Ethermax Token verification failed:", error.message);
+    console.log("PixelMiner Token verification failed:", error.message);
   }
 
-  // Verify EthermaxMining
-  console.log("Verifying EthermaxMining contract...");
+  // Verify PixelMinerMining
+  console.log("Verifying PixelMinerMining contract...");
   try {
     await run("verify:verify", {
       address: miningAddress,
       constructorArguments: [],
       network: "base"
     });
-    console.log("EthermaxMining verified successfully!");
+    console.log("PixelMinerMining verified successfully!");
   } catch (error) {
-    console.log("EthermaxMining verification failed:", error.message);
+    console.log("PixelMinerMining verification failed:", error.message);
   }
 }
 

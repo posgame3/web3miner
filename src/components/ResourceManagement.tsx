@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, VStack, HStack, Text, Badge, Progress, useColorModeValue } from '@chakra-ui/react';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
-import { ETHERMAX_ADDRESS, MINING_ADDRESS, MINING_ABI } from '../config/contracts';
+import { PIXELMINER_ADDRESS, MINING_ADDRESS, MINING_ABI } from '../config/contracts';
 import { TileCoords } from './MiningGrid';
 import { formatEther } from 'viem';
 import { ethers } from 'ethers';
@@ -62,7 +62,7 @@ const ResourceManagement = ({ minerTiles }: ResourceManagementProps) => {
   // PXL balance with auto-refresh
   const { data: maxxBalance } = useBalance({ 
     address, 
-    token: ETHERMAX_ADDRESS,
+    token: PIXELMINER_ADDRESS,
     query: {
       refetchInterval: 1000, // Refresh every second
     }
