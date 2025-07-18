@@ -62,7 +62,7 @@ const TokenAddress = () => {
             letterSpacing={1}
             textShadow="0 0 8px #00E8FF"
           >
-            ETHERMAX TOKEN:
+            PXL TOKEN:
           </Text>
           <Text
             fontSize="xs"
