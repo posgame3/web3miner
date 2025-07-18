@@ -10,7 +10,7 @@ async function main() {
 
   // Use existing PixelMiner Token
   console.log("Using existing PixelMiner Token...");
-  const pixelMinerAddress = "0x903D72Ee67BFBA9305819e0881414e5ADd3270D0";
+  const pixelMinerAddress = "0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51";
   const pixelMiner = await ethers.getContractAt("PixelMiner", pixelMinerAddress);
   console.log("PixelMiner Token address:", pixelMinerAddress);
 

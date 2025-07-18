@@ -6,8 +6,8 @@
 
 | Contract | Address |
 |----------|---------|
-| **PixelMiner Token** | `0x903D72Ee67BFBA9305819e0881414e5ADd3270D0` |
-| **PixelMinerMining** | `0xb3ca0813C6D07e9c60f74f9B4662911aC3bcccfb` |
+| **PixelMiner Token** | `0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51` |
+| **PixelMinerMining** | `0x82A792BEcd7031C610b75720D2Db476BBf4f72D0` |
 
 ### ✅ What Was Updated
 
@@ -75,8 +75,8 @@ The application is now fully configured for Base network with:
 ### 🔗 Useful Links
 
 - **BaseScan**: https://basescan.org
-- **PixelMiner Token**: https://basescan.org/token/0x903D72Ee67BFBA9305819e0881414e5ADd3270D0
-- **PixelMinerMining**: https://basescan.org/address/0xb3ca0813C6D07e9c60f74f9B4662911aC3bcccfb
+- **PixelMiner Token**: https://basescan.org/token/0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51
+- **PixelMinerMining**: https://basescan.org/address/0x82A792BEcd7031C610b75720D2Db476BBf4f72D0
 
 ---
 

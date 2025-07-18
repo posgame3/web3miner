@@ -4,14 +4,14 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
 
-  const lpAddress = "0x570a3D83D2658ed3c240C682aE919074b0317CAa";
+  const lpAddress = "0x1D54fDE8ed9C6856960c6AB2376948F962d071A6";
   
-  const Ethermax = await ethers.getContractFactory("Ethermax");
-  const ethermax = await Ethermax.deploy(lpAddress);
-  await ethermax.waitForDeployment();
+  const PixelMiner = await ethers.getContractFactory("PixelMiner");
+  const pixelMiner = await PixelMiner.deploy(lpAddress);
+  await pixelMiner.waitForDeployment();
 
-  const address = await ethermax.getAddress();
-  console.log("Ethermax deployed to:", address);
+  const address = await pixelMiner.getAddress();
+  console.log("PixelMiner deployed to:", address);
   console.log("LP Address:", lpAddress);
 }
 

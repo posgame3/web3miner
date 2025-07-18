@@ -8,8 +8,8 @@ async function main() {
   console.log("Connecting contracts with account:", deployer.address);
 
   // Contract addresses
-  const pixelMinerAddress = "0x903D72Ee67BFBA9305819e0881414e5ADd3270D0";
-  const miningAddress = "0xb3ca0813C6D07e9c60f74f9B4662911aC3bcccfb";
+  const pixelMinerAddress = "0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51";
+const miningAddress = "0x82A792BEcd7031C610b75720D2Db476BBf4f72D0";
 
   // Get contract instances
   const pixelMiner = await ethers.getContractAt("PixelMiner", pixelMinerAddress);

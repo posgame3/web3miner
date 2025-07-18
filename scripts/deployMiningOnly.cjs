@@ -1,9 +1,13 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  console.log("Deploying PixelMinerMining contract...");
-  
+  console.log("Starting mining contract deployment...");
+
+  // Already deployed token address
+  const pixelMinerAddress = "0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51";
+
   // Deploy PixelMinerMining
+  console.log("Deploying PixelMinerMining contract...");
   const PixelMinerMining = await ethers.getContractFactory("PixelMinerMining");
   const mining = await PixelMinerMining.deploy();
   await mining.waitForDeployment();
@@ -12,7 +16,6 @@ async function main() {
 
   // Set the token address in the mining contract
   console.log("Setting token address in mining contract...");
-  const pixelMinerAddress = "0xE0e3ce85cd2C74421a51232FF0b6f494cee02D51";
   const tx = await mining.setEthermax(pixelMinerAddress);
   await tx.wait();
   console.log("Token address set in mining contract");
@@ -23,11 +26,13 @@ async function main() {
   const addMinterTx = await pixelMiner.addMinter(miningAddress);
   await addMinterTx.wait();
   console.log("Mining contract added as authorized minter");
+
+  console.log("Deployment completed successfully!");
+  console.log("PixelMiner Token:", pixelMinerAddress);
+  console.log("PixelMinerMining:", miningAddress);
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  }); 
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+}); 
