@@ -5,7 +5,7 @@
 ### 1. Utwórz plik .env (NIE COMMITUJ GO!)
 ```bash
 # Private Key (NIE COMMITUJ TEGO PLIKU!)
-PRIVATE_KEY=5156cec0f5f14b801dca580d360faf3ec42cb4114d4dace910595a9bff2ae276
+PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
 
 # RPC URLs
 BASE_RPC_URL=https://mainnet.base.org
@@ -25,7 +25,7 @@ echo ".env" >> .gitignore
 ### 3. Deployment na Base Mainnet
 ```bash
 # Ustaw zmienną środowiskową
-export PRIVATE_KEY=5156cec0f5f14b801dca580d360faf3ec42cb4114d4dace910595a9bff2ae276
+export PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
 
 # Deploy
 npx hardhat run scripts/deploy-base.cjs --network base
@@ -34,7 +34,7 @@ npx hardhat run scripts/deploy-base.cjs --network base
 ### 4. Deployment na Base Sepolia (testnet)
 ```bash
 # Ustaw zmienną środowiskową
-export PRIVATE_KEY=5156cec0f5f14b801dca580d360faf3ec42cb4114d4dace910595a9bff2ae276
+export PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
 
 # Deploy
 npx hardhat run scripts/deploy-base-sepolia.cjs --network baseSepolia
@@ -43,7 +43,7 @@ npx hardhat run scripts/deploy-base-sepolia.cjs --network baseSepolia
 ### 5. Weryfikacja kontraktów
 ```bash
 # Ustaw zmienną środowiskową
-export PRIVATE_KEY=5156cec0f5f14b801dca580d360faf3ec42cb4114d4dace910595a9bff2ae276
+export PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
 
 # Verify na Base
 npx hardhat run scripts/verify-base.cjs --network base
