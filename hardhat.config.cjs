@@ -19,13 +19,13 @@ module.exports = {
     },
     base: {
       url: process.env.BASE_RPC_URL || "https://mainnet.base.org",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : ["cc29642986e51b7d81b09cc01cf53cf3b7d05a4e1b6150d10ad29b5cca6f06fd"],
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 8453,
       gasPrice: 1000000000, // 1 gwei
     },
     baseSepolia: {
       url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : ["cc29642986e51b7d81b09cc01cf53cf3b7d05a4e1b6150d10ad29b5cca6f06fd"],
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 84532,
       gasPrice: 1000000000, // 1 gwei
     },
