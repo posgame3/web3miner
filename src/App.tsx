@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Stake from './pages/Stake';
 import Referral from './pages/Referral';
 import TokenAddress from './components/TokenAddress';
+import NetworkSwitcher from './components/NetworkSwitcher';
 
 function App() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
     <ChakraProvider>
       <Router>
         <Box minH="100vh" bg="gray.900" color="white">
+          <NetworkSwitcher />
           <TokenAddress />
           <Navbar />
           <Routes>
