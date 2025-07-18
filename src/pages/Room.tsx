@@ -180,8 +180,6 @@ const Room = () => {
         functionName: 'purchaseInitialFacility',
         args: [referrerAddress],
         value: initialFacilityPrice as bigint,
-        chain: chainId,
-        account: address,
       });
       setFacilityTxHash(hash as `0x${string}`);
       toast({
@@ -444,30 +442,7 @@ const Room = () => {
   const starterMinerPower = starterMinerData && Array.isArray(starterMinerData) && starterMinerData[5] ? BigInt(starterMinerData[5]) : 0n;
   const availablePower = totalPowerOutput > starterMinerPower ? totalPowerOutput - starterMinerPower : 0n;
 
-  // Automatyczna zmiana sieci na Sepolia po połączeniu walleta
-  useEffect(() => {
-    if (isConnected && window.ethereum && chainId !== 11155111) {
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0xaa36a7' }], // 0xaa36a7 = 11155111 (Sepolia)
-      }).then(() => {
-        toast({
-          title: 'Switched to Sepolia network',
-          status: 'success',
-          duration: 4000,
-          isClosable: true,
-        });
-      }).catch((err: any) => {
-        toast({
-          title: 'Please switch to Sepolia network!',
-          description: err?.message || '',
-          status: 'error',
-          duration: 6000,
-          isClosable: true,
-        });
-      });
-    }
-  }, [isConnected, chainId, toast]);
+  // NetworkSwitcher component handles automatic network switching to Base
 
   // Wyciągnij statystyki starter minera
   const starterMinerStats = starterMinerData && Array.isArray(starterMinerData)
