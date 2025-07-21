@@ -12,7 +12,7 @@ import {
   Link,
   Image,
 } from '@chakra-ui/react';
-import { FaDiscord, FaTwitter, FaGithub } from 'react-icons/fa';
+import { FaTwitter, FaGithub } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
 
 const Home = () => {
@@ -301,14 +301,6 @@ const Home = () => {
         <VStack spacing={8}>
           <Heading color={neon.blue}>Join Our Community</Heading>
           <Flex gap={4} justify="center" mt={8}>
-            <Link
-              href="https://discord.gg/pixelminer"
-              isExternal
-              _hover={{ transform: 'scale(1.1)' }}
-              transition="all 0.2s"
-            >
-              <Icon as={FaDiscord} w={8} h={8} color={neon.blue} />
-            </Link>
             <Link
               href="https://x.com/pixelminerfun"
               isExternal
